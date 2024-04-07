@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medical_booking_app/medicalHome.dart';
+import 'package:medical_booking_app/views/MedicalHome/medicalHome.dart';
 void main() {
   runApp(const MyApp());
 }

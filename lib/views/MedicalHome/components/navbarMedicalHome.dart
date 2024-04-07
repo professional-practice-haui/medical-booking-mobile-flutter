@@ -24,7 +24,7 @@ class _NavbarMedicalHomeState extends State<NavbarMedicalHome> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(20),
+      margin: EdgeInsets.all(12),
       child: CarouselSlider.builder(
         itemCount: listImagesOfLogo.length,
         itemBuilder: (context, index, realIndex) {
@@ -40,7 +40,7 @@ class _NavbarMedicalHomeState extends State<NavbarMedicalHome> {
         },
         options: CarouselOptions(
           autoPlay: true,
-          autoPlayInterval: Duration(seconds: 5),
+          autoPlayInterval: Duration(seconds: 3),
           enlargeCenterPage: true,
           viewportFraction: 1,
           aspectRatio: 2.0,
