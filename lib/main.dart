@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:medical_booking_app/views/MedicalHome/medicalHome.dart';
+import 'package:medical_booking_app/routes/routeGenrator.dart';
+import 'package:medical_booking_app/routes/routes.dart';
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home:MedicalHome(),
+      initialRoute: RoutesWidget.routeHome,
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
-
 

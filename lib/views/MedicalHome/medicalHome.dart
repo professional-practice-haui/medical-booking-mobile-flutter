@@ -15,8 +15,13 @@ class MedicalHome extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Color.fromRGBO(25, 117, 220, 1),
-        title: TitLeAppBarHomeMedical(),
+        toolbarHeight: 80,
+        title: Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: TitLeAppBarHomeMedical(),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
