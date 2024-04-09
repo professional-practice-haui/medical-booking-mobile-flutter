@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medical_booking_app/views/MedicalLogin/login.dart';
 class TitLeAppBarHomeMedical extends StatelessWidget {
   const TitLeAppBarHomeMedical({super.key});
 
@@ -43,7 +44,12 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
                         ),
                         Text("/", style: TextStyle(color: Colors.white)),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => LoginScreen()),
+                            );
+                          },
                           child: const Text(
                             "Đăng Nhập",
                             style: TextStyle(color: Colors.white),
@@ -58,7 +64,8 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
             IconButton(
                 onPressed: () {},
                 icon: Icon(Icons.notifications_none_rounded,
-                    color: Colors.white))
+                    color: Colors.white)
+            )
           ],
         ),
       ],
