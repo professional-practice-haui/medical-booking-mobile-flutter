@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medical_booking_app/baseWidget/email.dart';
+import 'package:medical_booking_app/baseWidget/password.dart';
 import 'package:medical_booking_app/routes/routes.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -80,119 +82,8 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-              Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1.0,
-                        color: isEmailFocused
-                            ? Colors.lightBlueAccent
-                            : Colors.black,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    margin: EdgeInsets.only(top: 20),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(Icons.person,size: 20,),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 40),
-                            child: TextField(
-                              controller: emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Email",
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  isPasswordFocused = false;
-                                  isEmailFocused = true;
-                                });
-                              },
-                              onEditingComplete: () {
-                                setState(() {
-                                  isEmailFocused = false;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1.0,
-                        color: isPasswordFocused
-                            ? Colors.lightBlueAccent
-                            : Colors.black,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    margin: EdgeInsets.only(top: 10),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(Icons.lock,size: 20,),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 40),
-                            child: TextField(
-                              controller: passwordController,
-                              obscureText: checkEye ? false : true,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Password',
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  isEmailFocused = false;
-                                  isPasswordFocused = true;
-                                });
-                              },
-                              onEditingComplete: () {
-                                setState(() {
-                                  isPasswordFocused = false;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          checkEye = !checkEye;
-                        });
-                      },
-                      icon: Icon(
-                        checkEye
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        size: 25,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              EmailTextField(emailController: emailController),
+              PasswordTextField(passwordController: passwordController,hintText: "Password",),
               SizedBox(height: 10.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -254,8 +145,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     InkWell(
                         onTap: () {
-                          Navigator.of(context).pushNamed(
-                            RoutesWidget.routeHome,
+                          Navigator.pushNamed(
+                              context,
+                              RoutesWidget.routeLogin
                           );
                         },
                         child: Text(
