@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medical_booking_app/views/MedicalHome/medicalHome.dart';
 import 'package:medical_booking_app/views/MedicalLogin/login.dart';
+import 'package:medical_booking_app/views/MedicalRegister/register.dart';
 class RouteGenerator {
   static const String routeHome = '/home';
   static const String routeLogin = '/login';
@@ -11,6 +12,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_)=>MedicalHome());
       case '/login':
         return MaterialPageRoute(builder: (_)=>LoginScreen());
+      case '/register':
+        return MaterialPageRoute(builder: (_)=>RegisterScreen());
       default:
         return _errorRoute();
     }
