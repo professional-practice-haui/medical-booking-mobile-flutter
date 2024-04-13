@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:medical_booking_app/routes/routes.dart';
 
 class DescriptionMedicalHome extends StatelessWidget {
   const DescriptionMedicalHome(
@@ -62,7 +63,9 @@ class DescriptionMedicalHome extends StatelessWidget {
           width: imageWidth,
           margin: EdgeInsets.only(left: 15, right: 15, top: 0,bottom: 10),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushNamed(RoutesWidget.routeRegister);
+            },
             child: Text("ĐĂNG KÍ NGAY",style: TextStyle(color: Colors.white),),
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(

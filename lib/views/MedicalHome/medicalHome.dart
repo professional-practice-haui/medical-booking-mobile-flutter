@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medical_booking_app/routes/routes.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/descriptionMedicalHome.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/listDepartment.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/listDoctor.dart';
@@ -6,13 +7,21 @@ import 'package:medical_booking_app/views/MedicalHome/components/navbarMedicalHo
 import 'package:medical_booking_app/views/MedicalHome/components/newMedical.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/titleAppBarMedicalHome.dart';
 
-class MedicalHome extends StatelessWidget {
-  const MedicalHome({Key? key});
 
+class MedicalHome extends StatefulWidget {
+  const MedicalHome({super.key});
+
+  @override
+  State<MedicalHome> createState() => _MedicalHomeState();
+}
+
+class _MedicalHomeState extends State<MedicalHome> {
+  int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -49,39 +58,35 @@ class MedicalHome extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        width: screenWidth,
-        height: screenHeight/16,
-        decoration: BoxDecoration(
-          color: Colors.white
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              BoxItemBottomNavBar(icon: Icon(Icons.home_filled),textBox: "Trang chủ",),
-              BoxItemBottomNavBar(icon: Icon(Icons.home_filled),textBox: "Đặt khám",),
-              BoxItemBottomNavBar(icon: Icon(Icons.home_filled),textBox: "Lịch sử",),
-              BoxItemBottomNavBar(icon: Icon(Icons.home_filled),textBox: "Cá nhân",)
-            ],
-        ),
-      ),
-    );
-  }
-}
-
-class BoxItemBottomNavBar extends StatelessWidget {
-  const BoxItemBottomNavBar({super.key,required this.icon,required this.textBox});
-  final String textBox;
-  final Icon icon;
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: (){},
-      child: Column(
-        children: [
-          icon,
-          Text(textBox)
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // Hiển thị tất cả các label
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_filled),
+            label: 'Trang chủ',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month_outlined),
+            label: 'Đặt khám',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_edu_outlined),
+            label: 'Lịch sử',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Cá nhân',
+          ),
         ],
+        unselectedItemColor: Colors.black, // Màu của label khi không được chọn
+        selectedItemColor: Colors.blueAccent,
+        currentIndex: _selectedIndex,
+        onTap: (int index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          if(index!=0) Navigator.of(context).pushNamed(RoutesWidget.routeLogin);
+        },
       ),
     );
   }
