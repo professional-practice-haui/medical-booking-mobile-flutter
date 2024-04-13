@@ -147,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {
                           Navigator.pushNamed(
                               context,
-                              RoutesWidget.routeLogin
+                              RoutesWidget.routeRegister
                           );
                         },
                         child: Text(
