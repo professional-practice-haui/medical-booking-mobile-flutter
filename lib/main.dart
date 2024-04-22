@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medical_booking_app/routes/routeGenrator.dart';
 import 'package:medical_booking_app/routes/routes.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -11,9 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      initialRoute: RoutesWidget.routeHome,
+      initialRoute: RoutesWidget.routeInformationAccount,
+      // initialRoute: RoutesWidget.routeHome,
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
-
