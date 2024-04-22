@@ -50,7 +50,7 @@ class _UserNameTextFieldState extends State<UserNameTextField> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(right: 40),
-                  child: TextField(
+                  child: TextFormField(
                     controller: widget.userNameController,
                     focusNode: userNameFocusNode,
                     keyboardType: TextInputType.emailAddress,
@@ -58,6 +58,12 @@ class _UserNameTextFieldState extends State<UserNameTextField> {
                       border: InputBorder.none,
                       hintText: "Username",
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Vui lòng nhập đầy đủ họ tên!';
+                      }
+                      return null;
+                    },
                   ),
                 ),
               ),

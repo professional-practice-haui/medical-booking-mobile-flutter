@@ -46,7 +46,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(right: 40),
-                  child: TextField(
+                  child: TextFormField(
                     controller: widget.passwordController,
                     focusNode: passwordFocusNode,
                     obscureText: checkEye ? false : true,
@@ -54,6 +54,12 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
                       border: InputBorder.none,
                       hintText: widget.hintText,
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Vui lòng không để trống';
+                      }
+                      return null;
+                    },
                   ),
                 ),
               ),

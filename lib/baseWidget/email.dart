@@ -51,7 +51,7 @@ class _EmailTextFieldState extends State<EmailTextField> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(right: 40),
-                  child: TextField(
+                  child: TextFormField(
                     controller: widget.emailController,
                     focusNode: emailFocusNode,
                     keyboardType: TextInputType.emailAddress,
@@ -59,6 +59,12 @@ class _EmailTextFieldState extends State<EmailTextField> {
                       border: InputBorder.none,
                       hintText: "Email",
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Vui lòng nhập đầy đủ Email';
+                      }
+                      return null;
+                    },
                   ),
                 ),
               ),
