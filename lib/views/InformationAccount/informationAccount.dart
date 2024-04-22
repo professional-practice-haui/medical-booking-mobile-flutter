@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:medical_booking_app/views/InformationAccount/components/privacyPolicy.dart';
 import 'package:medical_booking_app/views/InformationAccount/components/profile.dart';
 
 class InformationAccount extends StatefulWidget {
@@ -89,7 +90,7 @@ class _InformationAccountState extends State<InformationAccount> {
                 color: Colors.purple,
               ),
               "Điều khoản và Quy định",
-              InformationAccount(),
+              privacyPolicy(),
               const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
