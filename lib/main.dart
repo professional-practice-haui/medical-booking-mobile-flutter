@@ -12,8 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      initialRoute: RoutesWidget.routeInformationAccount,
-      // initialRoute: RoutesWidget.routeHome,
+      // initialRoute: RoutesWidget.routeInformationAccount,
+      initialRoute: RoutesWidget.routeHome,
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
