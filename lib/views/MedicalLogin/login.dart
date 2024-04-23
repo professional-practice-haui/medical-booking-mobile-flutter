@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medical_booking_app/baseApi/userApi.dart';
 import 'package:medical_booking_app/baseWidget/email.dart';
 import 'package:medical_booking_app/baseWidget/password.dart';
 import 'package:medical_booking_app/routes/routes.dart';
@@ -28,27 +29,39 @@ class _LoginPageState extends State<LoginPage> {
   bool checkEye = false;
   bool isEmailFocused = false;
   bool isPasswordFocused = false;
-
-  void _loginPressed() {
+  bool checkLogin = false;
+  void _loginPressed() async {
     String email = emailController.text;
     String password = passwordController.text;
+    dynamic response =
+    await fetchLogin(emailController.text, passwordController.text);
+    if (response != null) {
+      setState(() {
+        checkLogin = true; // Đánh dấu đăng nhập thành công
+      });
 
-    if (!_isValidEmail(email)) {
-      print('Email không hợp lệ');
+      // Hiển thị màn hình thông báo đăng nhập thành công
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Login Successful'),
+            content: Text('Welcome, $email!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      // Navigator.pushReplacementNamed(context, RoutesWidget.routeHome);
     }
-
-    if (!_isValidPassword(password)) {
-      print('Mật khẩu không hợp lệ');
-    }
   }
 
-  bool _isValidEmail(String email) {
-    return email.contains('@');
-  }
-
-  bool _isValidPassword(String password) {
-    return password.length >= 6;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +96,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               EmailTextField(emailController: emailController),
-              PasswordTextField(passwordController: passwordController,hintText: "Password",),
+              PasswordTextField(
+                passwordController: passwordController,
+                hintText: "Password",
+              ),
               SizedBox(height: 10.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -146,9 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                     InkWell(
                         onTap: () {
                           Navigator.pushNamed(
-                              context,
-                              RoutesWidget.routeRegister
-                          );
+                              context, RoutesWidget.routeRegister);
                         },
                         child: Text(
                           "Đăng Kí Ngay",
