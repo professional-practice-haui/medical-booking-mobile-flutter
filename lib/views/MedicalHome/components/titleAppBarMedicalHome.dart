@@ -1,11 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:medical_booking_app/main.dart';
 import 'package:medical_booking_app/routes/routes.dart';
-import 'package:medical_booking_app/views/MedicalLogin/login.dart';
+import 'package:provider/provider.dart';
+
 class TitLeAppBarHomeMedical extends StatelessWidget {
   const TitLeAppBarHomeMedical({super.key});
 
+  // Hàm để xác định buổi của ngày hiện tại
+  String getCurrentTimePeriod() {
+    DateTime now = DateTime.now();
+    int hour = now.hour;
+
+    if (hour >= 5 && hour < 12) {
+      return "Buổi sáng hứng khởi";
+    } else if (hour >= 12 && hour < 18) {
+      return "Buổi chiều vui vẻ";
+    } else {
+      return "Buổi tối tốt lành";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    String timePeriod = getCurrentTimePeriod(); // Lấy buổi của ngày hiện tại
+    var user = context.watch<UserData>().user;
+    var accessToken = context.watch<UserData>().accessToken;
     return Column(
       children: [
         Row(
@@ -14,12 +33,15 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.person,
-                      color: Colors.white,
-                    )),
+                InkWell(
+                  onTap: () {
+                    // Navigator.pushNamed(context, RoutesWidget.routeInformationAccount);
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: user.avatar!=null?NetworkImage(user.avatar.toString()):NetworkImage("https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-2.jpg"),
+                    radius: 15, // Đặt bán kính của ảnh vòng tròn
+                  ),
+                ),
                 SizedBox(
                   width: 10,
                 ),
@@ -29,7 +51,7 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.fromLTRB(12, 10, 0, 0),
                       child: Text(
-                        "Buổi sáng hứng khởi",
+                        timePeriod, // Hiển thị buổi tương ứng
                         style: TextStyle(color: Colors.white, fontSize: 12),
                       ),
                     ),
@@ -39,8 +61,8 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             Navigator.pushNamed(
-                                context,
-                                RoutesWidget.routeRegister
+                              context,
+                              RoutesWidget.routeRegister,
                             );
                           },
                           child: const Text(
@@ -52,8 +74,8 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             Navigator.pushNamed(
-                                context,
-                                RoutesWidget.routeLogin
+                              context,
+                              RoutesWidget.routeLogin,
                             );
                           },
                           child: const Text(
@@ -68,9 +90,8 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
               ],
             ),
             IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.notifications_none_rounded,
-                    color: Colors.white)
+              onPressed: () {},
+              icon: Icon(Icons.notifications_none_rounded, color: Colors.white),
             )
           ],
         ),

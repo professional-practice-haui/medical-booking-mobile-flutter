@@ -4,7 +4,7 @@ import 'package:medical_booking_app/models/user.model.dart';
 
 Future<dynamic> fetchRegister(String fullName, String email, String password) async {
   final response = await http.post(
-    Uri.parse('https://7bbf-116-99-55-170.ngrok-free.app/api/v1/auth/register'),
+    Uri.parse('https://medical-booking-be-spring.onrender.com/api/v1/auth/register'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -14,18 +14,19 @@ Future<dynamic> fetchRegister(String fullName, String email, String password) as
       'password': password,
     }),
   );
-  print(response.body);
-  if (response.statusCode == 201) {
-    Map<String, dynamic> responseData = jsonDecode(response.body);
-    return responseData;
-  } else {
-    // If the server returns an error response, throw an exception.
-    throw Exception('Failed to register user');
-  }
+  String responseBody = response.body;
+
+  // Decode the response using UTF-8 encoding
+  String decodedResponse = utf8.decode(responseBody.codeUnits);
+
+  // Parse the JSON data
+  Map<String, dynamic> responseData = jsonDecode(decodedResponse);
+  return responseData;
 }
+
 Future<dynamic> fetchLogin(String email, String password) async {
   final response = await http.post(
-    Uri.parse('https://7bbf-116-99-55-170.ngrok-free.app/api/v1/auth/login'),
+    Uri.parse('https://medical-booking-be-spring.onrender.com/api/v1/auth/login'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -34,14 +35,15 @@ Future<dynamic> fetchLogin(String email, String password) async {
       'password': password,
     }),
   );
-  print(response.body);
-  if (response.statusCode == 200) {
-    Map<String, dynamic> responseData = jsonDecode(response.body);
-    print(responseData);
-    User newUser = new User(userId: responseData['id'], email: email, password: password, fullName: responseData['fullName']);
-    return newUser;
-  } else {
-    // If the server returns an error response, throw an exception.
-    throw Exception('Failed to login user');
-  }
+
+  // Convert the response body to a string
+  String responseBody = response.body;
+
+  // Decode the response using UTF-8 encoding
+  String decodedResponse = utf8.decode(responseBody.codeUnits);
+
+  // Parse the JSON data
+  Map<String, dynamic> responseData = jsonDecode(decodedResponse);
+
+  return responseData;
 }
