@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:medical_booking_app/DataLocal/storage.const.dart';
 import 'package:medical_booking_app/baseApi/userApi.dart';
 import 'package:medical_booking_app/baseWidget/AnimationNextScreen.dart';
 import 'package:medical_booking_app/main.dart';
+import 'package:medical_booking_app/models/user.model.dart';
 import 'package:medical_booking_app/routes/routes.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   bool checkEye = false;
   bool checkLogin = false;
   String? errorMessage;
-
+  final box = GetStorage();
   void _loginPressed() async {
     try {
       if (_formKey.currentState!.validate()) {
@@ -45,8 +48,6 @@ class _LoginPageState extends State<LoginPage> {
         await Future.delayed(Duration(seconds: 1));
         Navigator.pop(context);
         if (response["code"] == 200) {
-          context.read<UserData>().updateUser(context);
-          print(context.watch<UserData>().user);
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -74,10 +75,23 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         SizedBox(height: 16.0),
                         TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                                context, RoutesWidget.routeHome);
-                            Future.delayed(Duration(seconds: 1));
+                          onPressed: () async {
+                            box.write(StorageConst.user, User(
+                              id: response["data"]["user"]['id'],
+                              email: response["data"]["user"]['email'],
+                              fullName: response["data"]["user"]['fullName'],
+                              address: response["data"]["user"]['address'],
+                              phone: response["data"]["user"]['phone'],
+                              dateOfBirth: response["data"]["user"]['dateOfBirth'],
+                              genderName: response["data"]["user"]['genderName'],
+                              avatar: response["data"]["user"]['avatar'],
+                              isLocked: response["data"]["user"]['isLocked'],
+                              createdDate: response["data"]["user"]['createdDate'],
+                              lastModifiedDate: response["data"]["user"]['lastModifiedDate'],
+                            ));
+                            box.write(StorageConst.token,response["data"]["token"] );
+                            Navigator.pushNamed(context, RoutesWidget.routeHome);
+                            await Future.delayed(Duration(seconds: 1));
                           },
                           style: ButtonStyle(
                             backgroundColor:
@@ -172,6 +186,9 @@ class _LoginPageState extends State<LoginPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false, // Đặt thành false để ẩn nút quay trở lại
+        ),
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:medical_booking_app/models/user.model.dart';
 import 'package:medical_booking_app/routes/routes.dart';
 import 'package:medical_booking_app/views/HealthForm/healthForm.dart';
@@ -35,9 +36,6 @@ class _MedicalHomeState extends State<MedicalHome> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
     return SafeArea(
       child: Scaffold(
         appBar: _selectedIndex==0? AppBar(
@@ -92,6 +90,9 @@ class BodyHome extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final box = GetStorage();
+    String? token = box.read("token");
+    User? user = box.read("user");
     return SingleChildScrollView(
           child: Container(
             decoration: BoxDecoration(
@@ -103,10 +104,10 @@ class BodyHome extends StatelessWidget {
                   imageWidth: screenWidth,
                   imageHeight: screenHeight / 3.5,
                 ),
-                DescriptionMedicalHome(
+                user==null&&token==null?DescriptionMedicalHome(
                   imageWidth: screenWidth,
                   imageHeight: screenHeight / 4,
-                ),
+                ):Container(),
                 ListDoctor(
                   imageWidth: screenWidth / 6,
                 ),
