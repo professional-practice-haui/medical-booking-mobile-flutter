@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-class UserNameTextField extends StatefulWidget {
-  const UserNameTextField({super.key,required this.userNameController});
-  final TextEditingController userNameController;
+class FullNameTextField extends StatefulWidget {
+  const FullNameTextField({super.key,required this.fullNameController});
+  final TextEditingController fullNameController;
   @override
-  State<UserNameTextField> createState() => _UserNameTextFieldState();
+  State<FullNameTextField> createState() => _FullNameTextFieldState();
 }
 
-class _UserNameTextFieldState extends State<UserNameTextField> {
+class _FullNameTextFieldState extends State<FullNameTextField> {
   bool isUserNameFocused = false;
   late FocusNode userNameFocusNode; // FocusNode for tracking the focus state
   @override
@@ -51,7 +51,7 @@ class _UserNameTextFieldState extends State<UserNameTextField> {
                 child: Padding(
                   padding: EdgeInsets.only(right: 40),
                   child: TextFormField(
-                    controller: widget.userNameController,
+                    controller: widget.fullNameController,
                     focusNode: userNameFocusNode,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(

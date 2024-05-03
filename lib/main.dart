@@ -13,8 +13,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       initialRoute: RoutesWidget.routeHome,
-      // initialRoute: RoutesWidget.routeInformationAccount,
-
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
