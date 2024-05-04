@@ -1,17 +1,25 @@
 class Department {
-  final String departmentId;
-  final String avatar;
+  final int departmentId;
+  final String image;
   final String name;
-  final int year;
-  final String? leader;
+  final String? nameLeader;
   final String? description;
 
   const Department({
     required this.departmentId,
-    required this.avatar,
+    required this.image,
     required this.name,
-    required this.year,
-    this.leader,
+    this.nameLeader,
     this.description,
   });
+
+  factory Department.fromJson(Map<String, dynamic> json) {
+    return Department(
+      departmentId: json['id'],
+      name: json['name'],
+      nameLeader: json['nameLeader'],
+      description: json['description'],
+      image: json['image'],
+    );
+  }
 }

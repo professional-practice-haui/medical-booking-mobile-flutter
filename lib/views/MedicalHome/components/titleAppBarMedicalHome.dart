@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:medical_booking_app/Provider/user.provider.dart';
+import 'package:medical_booking_app/providers/user.provider.dart';
 import 'package:medical_booking_app/models/user.model.dart';
 import 'package:medical_booking_app/routes/routes.dart';
 import 'package:provider/provider.dart';
@@ -75,15 +75,12 @@ class _TitleAppBarMedicalHomeState extends State<TitleAppBarMedicalHome> {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      // box.remove('token');
-                      // box.remove('user');
-                      // box.save();
-                      context.watch<UserProvider>().logout();
-                      // Navigator.pushNamedAndRemoveUntil(
-                      //   context,
-                      //   RoutesWidget.routeLogin,
-                      //   (route) => false, // Remove all routes in the stack
-                      // );
+                      context.read<UserProvider>().logout();
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        RoutesWidget.routeLogin,
+                        (route) => false, // Remove all routes in the stack
+                      );
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.blue),
