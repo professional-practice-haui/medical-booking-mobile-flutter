@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medical_booking_app/models/user.model.dart';
 
-import 'package:medical_booking_app/services/userServices.dart';
+import 'package:medical_booking_app/services/user.service.dart';
 
 class UserProvider extends ChangeNotifier {
   User? user;

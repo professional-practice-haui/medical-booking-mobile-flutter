@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medical_booking_app/Provider/user.provider.dart';
-import 'package:medical_booking_app/services/userServices.dart';
+import 'package:medical_booking_app/providers/user.provider.dart';
+import 'package:medical_booking_app/services/user.service.dart';
 import 'package:medical_booking_app/baseWidget/AnimationNextScreen.dart';
 import 'package:medical_booking_app/models/user.model.dart';
 import 'package:medical_booking_app/routes/routes.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medical_booking_app/Provider/user.provider.dart';
+import 'package:medical_booking_app/providers/user.provider.dart';
 import 'package:medical_booking_app/models/user.model.dart';
 import 'package:medical_booking_app/views/HealthForm/healthForm.dart';
 import 'package:medical_booking_app/views/InformationAccount/informationAccount.dart';
@@ -127,7 +127,7 @@ class BodyHomeState extends State<BodyHome> {
               imageWidth: screenWidth / 6,
             ),
             ListDepartment(
-              imageWidth: screenWidth / 6,
+              imageWidth: screenWidth / 7.5,
             ),
             NewMedical(
               imageWidth: screenWidth,
