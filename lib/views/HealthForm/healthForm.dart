@@ -17,63 +17,64 @@ class _HealthFormState extends State<HealthForm> {
   final TextEditingController bhytController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController ngayKhamController = TextEditingController();
-  final TextEditingController chuyenKhoaKhamController = TextEditingController();
+  final TextEditingController chuyenKhoaKhamController =
+      TextEditingController();
 
   // Dropdown menu value and items
-  List<Department> departments = [
-    Department(
-        departmentId: "", avatar: "anh1", name: "Khoa tim mạch", year: 2000),
-    Department(departmentId: "", avatar: "anh1", name: "Khoa mắt", year: 2000),
-    Department(departmentId: "", avatar: "anh1", name: "Khoa dược", year: 2000),
-    Department(
-        departmentId: "", avatar: "anh1", name: "Khoa da liễu", year: 2000),
-    Department(
-        departmentId: "", avatar: "anh1", name: "Khoa thần kinh", year: 2000),
-    Department(
-        departmentId: "", avatar: "anh1", name: "Khoa tâm lý", year: 2000),
-    Department(
-        departmentId: "",
-        avatar: "anh1",
-        name: "Khoa Nội cơ – xương – khớp",
-        year: 2000),
-    Department(
-        departmentId: "",
-        avatar: "anh1",
-        name: "Khoa Nội thận – tiết niệu",
-        year: 2000),
-    Department(
-        departmentId: "",
-        avatar: "anh1",
-        name: "Khoa Y học cổ truyền",
-        year: 2000),
-    Department(
-        departmentId: "",
-        avatar: "anh1",
-        name: "Khoa Ngoại tổng hợp",
-        year: 2000),
-    Department(
-        departmentId: "", avatar: "anh1", name: "Khoa Da Liễu", year: 2000),
-    Department(
-        departmentId: "",
-        avatar: "anh1",
-        name: "Khoa Ngoại thần kinh",
-        year: 2000),
-    Department(
-        departmentId: "",
-        avatar: "anh1",
-        name: "Khoa Ngoại thận – tiết niệu",
-        year: 2000),
-    Department(
-        departmentId: "",
-        avatar: "anh1",
-        name: "Khoa Răng - hàm – mặt",
-        year: 2000),
-    Department(
-        departmentId: "",
-        avatar: "anh1",
-        name: "Khoa Vật lý trị liệu – phục hồi chức năng",
-        year: 2000),
-  ];
+  // List<Department> departments = [
+  //   Department(
+  //       departmentId: "", avatar: "anh1", name: "Khoa tim mạch", year: 2000),
+  //   Department(departmentId: "", avatar: "anh1", name: "Khoa mắt", year: 2000),
+  //   Department(departmentId: "", avatar: "anh1", name: "Khoa dược", year: 2000),
+  //   Department(
+  //       departmentId: "", avatar: "anh1", name: "Khoa da liễu", year: 2000),
+  //   Department(
+  //       departmentId: "", avatar: "anh1", name: "Khoa thần kinh", year: 2000),
+  //   Department(
+  //       departmentId: "", avatar: "anh1", name: "Khoa tâm lý", year: 2000),
+  //   Department(
+  //       departmentId: "",
+  //       avatar: "anh1",
+  //       name: "Khoa Nội cơ – xương – khớp",
+  //       year: 2000),
+  //   Department(
+  //       departmentId: "",
+  //       avatar: "anh1",
+  //       name: "Khoa Nội thận – tiết niệu",
+  //       year: 2000),
+  //   Department(
+  //       departmentId: "",
+  //       avatar: "anh1",
+  //       name: "Khoa Y học cổ truyền",
+  //       year: 2000),
+  //   Department(
+  //       departmentId: "",
+  //       avatar: "anh1",
+  //       name: "Khoa Ngoại tổng hợp",
+  //       year: 2000),
+  //   Department(
+  //       departmentId: "", avatar: "anh1", name: "Khoa Da Liễu", year: 2000),
+  //   Department(
+  //       departmentId: "",
+  //       avatar: "anh1",
+  //       name: "Khoa Ngoại thần kinh",
+  //       year: 2000),
+  //   Department(
+  //       departmentId: "",
+  //       avatar: "anh1",
+  //       name: "Khoa Ngoại thận – tiết niệu",
+  //       year: 2000),
+  //   Department(
+  //       departmentId: "",
+  //       avatar: "anh1",
+  //       name: "Khoa Răng - hàm – mặt",
+  //       year: 2000),
+  //   Department(
+  //       departmentId: "",
+  //       avatar: "anh1",
+  //       name: "Khoa Vật lý trị liệu – phục hồi chức năng",
+  //       year: 2000),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -377,36 +378,36 @@ class _HealthFormState extends State<HealthForm> {
                       SizedBox(height: 10),
                     ],
                   ),
-                  DropdownButtonFormField<String>(
-                    items: departments
-                        .map<DropdownMenuItem<String>>((Department depart) {
-                      return DropdownMenuItem<String>(
-                        value: depart.name,
-                        child: Text(depart.name),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                    decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(width: 1),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      hintStyle: TextStyle(color: Colors.grey[600]),
-                    ),
-                    style: TextStyle(color: Colors.black),
-                    validator: (value) {
-                      if (value == "" || value == null) {
-                        return 'Vui lòng chọn khoa để khám';
-                      }
-                      return null;
-                    },
-                  ),
+                  // DropdownButtonFormField<String>(
+                  //   items: departments
+                  //       .map<DropdownMenuItem<String>>((Department depart) {
+                  //     return DropdownMenuItem<String>(
+                  //       value: depart.name,
+                  //       child: Text(depart.name),
+                  //     );
+                  //   }).toList(),
+                  //   onChanged: (value) {
+                  //     setState(() {});
+                  //   },
+                  //   decoration: InputDecoration(
+                  //     contentPadding:
+                  //         EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(8),
+                  //       borderSide: BorderSide(width: 1),
+                  //     ),
+                  //     filled: true,
+                  //     fillColor: Colors.grey[200],
+                  //     hintStyle: TextStyle(color: Colors.grey[600]),
+                  //   ),
+                  //   style: TextStyle(color: Colors.black),
+                  //   validator: (value) {
+                  //     if (value == "" || value == null) {
+                  //       return 'Vui lòng chọn khoa để khám';
+                  //     }
+                  //     return null;
+                  //   },
+                  // ),
                   SizedBox(height: 20),
                   Row(
                     children: [
@@ -430,7 +431,7 @@ class _HealthFormState extends State<HealthForm> {
                     controller: ngayKhamController,
                     decoration: InputDecoration(
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide(width: 1),

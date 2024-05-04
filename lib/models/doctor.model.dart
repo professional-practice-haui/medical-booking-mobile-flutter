@@ -1,21 +1,29 @@
 class Doctor {
   final String doctorId;
-  final String avatar;
+  final String image;
   final String name;
-  final String gender;
-  final String degree;
+  final String? gender;
+  final String? degree;
   final int experience;
-  final String description;
-  final String departmentId;
+  final String? description;
+  final String? departmentId;
 
   const Doctor({
     required this.doctorId,
-    required this.avatar,
+    required this.image,
     required this.name,
-    required this.gender,
-    required this.degree,
+    this.gender,
+    this.degree,
     required this.experience,
-    required this.description,
-    required this.departmentId,
+    this.description,
+    this.departmentId,
   });
+  factory Doctor.fromJson(Map<String, dynamic> json) {
+    return Doctor(
+      doctorId: json['id'],
+      name: json['name'],
+      experience: json['experience'],
+      image: json['image'],
+    );
+  }
 }
