@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medical_booking_app/views/InformationAccount/informationAccount.dart';
+import 'package:medical_booking_app/views/MedicalHistory/medicalHistory.dart';
 import 'package:medical_booking_app/views/MedicalHome/medicalHome.dart';
 import 'package:medical_booking_app/views/MedicalLogin/login.dart';
 import 'package:medical_booking_app/views/MedicalRegister/register.dart';
@@ -17,6 +18,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_)=>RegisterScreen());
       case '/informationAccount':
         return MaterialPageRoute(builder: (_)=>InformationAccount());
+      case '/history':
+        return MaterialPageRoute(builder: (_)=>MedicalHistory());
       default:
         return _errorRoute();
     }
