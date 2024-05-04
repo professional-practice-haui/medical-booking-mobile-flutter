@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:medical_booking_app/baseApi/userApi.dart';
+import 'package:medical_booking_app/Provider/user.provider.dart';
+import 'package:medical_booking_app/services/userServices.dart';
 import 'package:medical_booking_app/baseWidget/AnimationNextScreen.dart';
 import 'package:medical_booking_app/models/user.model.dart';
 import 'package:medical_booking_app/routes/routes.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   @override
@@ -41,12 +43,13 @@ class _RegisterPageState extends State<RegisterPage> {
   void _registerUser(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       try {
-        dynamic response = await fetchRegister(
+        UserProvider userProvider =
+            Provider.of<UserProvider>(context, listen: false);
+        await userProvider.register(
           fullNameController.text,
           emailController.text,
           passwordController.text,
         );
-        print(response);
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -55,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
         );
         await Future.delayed(Duration(seconds: 1));
         Navigator.pop(context); // Đóng dialog AnimationNextScreen
-        if (response["code"]==201) {
+        if (userProvider.checkRegister == true) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -84,13 +87,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       SizedBox(height: 16.0),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, RoutesWidget.routeLogin);
+                          Navigator.pushNamed(context, RoutesWidget.routeLogin);
                           Future.delayed(Duration(seconds: 1));
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(Colors.blue),
+                              MaterialStateProperty.all(Colors.blue),
                           shape: MaterialStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4.0),
@@ -112,61 +114,8 @@ class _RegisterPageState extends State<RegisterPage> {
             },
           );
         } else {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 0.0,
-                backgroundColor: Colors.transparent,
-                content: Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Đăng kí thất bại",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                          MaterialStateProperty.all(Colors.blue),
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'OK',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
           setState(() {
-            errorMessage = response["message"];
+            errorMessage = userProvider.errorMessage;
           });
         }
       } catch (e) {

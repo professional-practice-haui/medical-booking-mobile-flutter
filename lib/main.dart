@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:medical_booking_app/Provider/user.provider.dart';
 import 'package:medical_booking_app/routes/routeGenrator.dart';
 import 'package:medical_booking_app/routes/routes.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,9 +13,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      initialRoute: RoutesWidget.routeHome,
-      onGenerateRoute: RouteGenerator.generateRoute,
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+      child: MaterialApp(
+        initialRoute: RoutesWidget.routeHome,
+        onGenerateRoute: RouteGenerator.generateRoute,
+      ),
     );
   }
 }

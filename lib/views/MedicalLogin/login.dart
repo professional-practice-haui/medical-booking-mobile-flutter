@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:medical_booking_app/DataLocal/storage.const.dart';
-import 'package:medical_booking_app/baseApi/userApi.dart';
+import 'package:medical_booking_app/Provider/user.provider.dart';
+import 'package:medical_booking_app/services/userServices.dart';
 import 'package:medical_booking_app/baseWidget/AnimationNextScreen.dart';
 import 'package:medical_booking_app/main.dart';
 import 'package:medical_booking_app/models/user.model.dart';
@@ -30,15 +29,18 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   bool isChecked = false;
   bool checkEye = false;
-  bool checkLogin = false;
   String? errorMessage;
-  final box = GetStorage();
-  void _loginPressed() async {
+  // final box = GetStorage();
+
+  final _formKey = GlobalKey<FormState>();
+  void _loginPressed(BuildContext context) async {
     try {
       if (_formKey.currentState!.validate()) {
         String email = emailController.text;
         String password = passwordController.text;
-        var response = await fetchLogin(email, password);
+        UserProvider userProvider =
+            Provider.of<UserProvider>(context, listen: false);
+        await userProvider.login(email, password);
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -47,76 +49,8 @@ class _LoginPageState extends State<LoginPage> {
         );
         await Future.delayed(Duration(seconds: 1));
         Navigator.pop(context);
-        if (response["code"] == 200) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  elevation: 0.0,
-                  backgroundColor: Colors.transparent,
-                  content: Container(
-                    padding: EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "Đăng nhập thành công",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 16.0),
-                        TextButton(
-                          onPressed: () async {
-                            box.write(StorageConst.user, User(
-                              id: response["data"]["user"]['id'],
-                              email: response["data"]["user"]['email'],
-                              fullName: response["data"]["user"]['fullName'],
-                              address: response["data"]["user"]['address'],
-                              phone: response["data"]["user"]['phone'],
-                              dateOfBirth: response["data"]["user"]['dateOfBirth'],
-                              genderName: response["data"]["user"]['genderName'],
-                              avatar: response["data"]["user"]['avatar'],
-                              isLocked: response["data"]["user"]['isLocked'],
-                              createdDate: response["data"]["user"]['createdDate'],
-                              lastModifiedDate: response["data"]["user"]['lastModifiedDate'],
-                            ));
-                            box.write(StorageConst.token,response["data"]["token"] );
-                            Navigator.pushNamed(context, RoutesWidget.routeHome);
-                            await Future.delayed(Duration(seconds: 1));
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.blue),
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            'OK',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              });
-        } else {
-          showDialog(
+        if (userProvider.checkLogin == true) {
+          await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
@@ -135,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "Đăng nhập thất bại",
+                        "Đăng nhập thành công",
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
@@ -148,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(Colors.blue),
+                              MaterialStateProperty.all(Colors.blue),
                           shape: MaterialStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4.0),
@@ -169,25 +103,33 @@ class _LoginPageState extends State<LoginPage> {
               );
             },
           );
+          print("Token login:");
+          print(userProvider.token!);
+          await Future.delayed(Duration(seconds: 1));
+          Navigator.pushNamed(context, RoutesWidget.routeHome);
+        } else {
           setState(() {
-            errorMessage = response["message"];
+            errorMessage = userProvider.errorMessage;
           });
         }
       }
     } catch (e) {
-      print(e);
+      setState(() {
+        errorMessage = e.toString();
+        print(errorMessage);
+      });
     }
   }
-
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false, // Đặt thành false để ẩn nút quay trở lại
+          automaticallyImplyLeading:
+              false, // Đặt thành false để ẩn nút quay trở lại
         ),
         body: Form(
           key: _formKey,
@@ -299,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 20.0),
                   ElevatedButton(
-                    onPressed: _loginPressed,
+                    onPressed: () => _loginPressed(context),
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
