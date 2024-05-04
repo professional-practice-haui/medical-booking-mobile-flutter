@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:medical_booking_app/Provider/user.provider.dart';
 import 'package:medical_booking_app/models/user.model.dart';
 import 'package:medical_booking_app/routes/routes.dart';
+import 'package:provider/provider.dart';
 
-class TitLeAppBarHomeMedical extends StatelessWidget {
-  const TitLeAppBarHomeMedical({super.key});
+class TitleAppBarMedicalHome extends StatefulWidget {
+  const TitleAppBarMedicalHome({super.key});
 
-  // Hàm để xác định buổi của ngày hiện tại
+  @override
+  State<TitleAppBarMedicalHome> createState() => _TitleAppBarMedicalHomeState();
+}
+
+class _TitleAppBarMedicalHomeState extends State<TitleAppBarMedicalHome> {
   String getCurrentTimePeriod(String? name) {
     DateTime now = DateTime.now();
     int hour = now.hour;
@@ -34,9 +40,8 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final box = GetStorage();
-    String? token = box.read("token");
-    User? user = box.read("user");
+    User? user = context.watch<UserProvider>().user;
+    String? token = context.watch<UserProvider>().token;
     String timePeriod = getCurrentTimePeriod(user?.fullName);
     void handelLogout(BuildContext context) {
       showDialog(
@@ -70,14 +75,15 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      box.remove('token');
-                      box.remove('user');
-                      box.save();
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        RoutesWidget.routeLogin,
-                        (route) => false, // Remove all routes in the stack
-                      );
+                      // box.remove('token');
+                      // box.remove('user');
+                      // box.save();
+                      context.watch<UserProvider>().logout();
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //   context,
+                      //   RoutesWidget.routeLogin,
+                      //   (route) => false, // Remove all routes in the stack
+                      // );
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -115,7 +121,7 @@ class TitLeAppBarHomeMedical extends StatelessWidget {
                   onTap: () {},
                   child: CircleAvatar(
                     backgroundImage: user != null && token != null
-                        ? NetworkImage(user.avatar!)
+                        ? NetworkImage(user!.avatar!)
                         : NetworkImage(
                             "https://lh3.googleusercontent.com/l1PbMRIFRS4BcOXSyUjbSsi3OKJOdp6ysy0G5w2O-jNCHcRMnWRDXSWNee0MHifq9IMVqLxo23K3A0iMh8UutYMjOUpwyrsxnS-VpO7S=rp-w1080-nu"),
                     radius: 15, // Đặt bán kính của ảnh vòng tròn

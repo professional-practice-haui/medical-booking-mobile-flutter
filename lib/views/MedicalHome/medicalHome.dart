@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:medical_booking_app/Provider/user.provider.dart';
 import 'package:medical_booking_app/models/user.model.dart';
-import 'package:medical_booking_app/routes/routes.dart';
 import 'package:medical_booking_app/views/HealthForm/healthForm.dart';
 import 'package:medical_booking_app/views/InformationAccount/informationAccount.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/descriptionMedicalHome.dart';
@@ -10,6 +9,8 @@ import 'package:medical_booking_app/views/MedicalHome/components/listDoctor.dart
 import 'package:medical_booking_app/views/MedicalHome/components/navbarMedicalHome.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/newMedical.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/titleAppBarMedicalHome.dart';
+import 'package:provider/provider.dart';
+
 class MedicalHome extends StatefulWidget {
   const MedicalHome({super.key});
 
@@ -33,20 +34,27 @@ class _MedicalHomeState extends State<MedicalHome> {
     // Widget for Cá nhân
     InformationAccount(),
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: _selectedIndex==0? AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Color.fromRGBO(25, 117, 220, 1),
-          toolbarHeight: 80,
-          title: Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: TitLeAppBarHomeMedical(),
-          ),
-        ):AppBar(automaticallyImplyLeading: false,toolbarHeight: 0),
+        appBar: _selectedIndex == 0
+            ? AppBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: Color.fromRGBO(25, 117, 220, 1),
+                toolbarHeight: 80,
+                title: Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: TitleAppBarMedicalHome(),
+                ),
+              )
+            : AppBar(automaticallyImplyLeading: false, toolbarHeight: 0),
         body: IndexedStack(
           index: _selectedIndex,
           children: _widgetOptions,
@@ -84,40 +92,50 @@ class _MedicalHomeState extends State<MedicalHome> {
     );
   }
 }
-class BodyHome extends StatelessWidget {
+
+class BodyHome extends StatefulWidget {
   const BodyHome({super.key});
+  @override
+  State<BodyHome> createState() => BodyHomeState();
+}
+
+class BodyHomeState extends State<BodyHome> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    final box = GetStorage();
-    String? token = box.read("token");
-    User? user = box.read("user");
+    User? user = context.watch<UserProvider>().user;
+    String? token = context.watch<UserProvider>().token;
     return SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(208, 190, 199, 0.3),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(208, 190, 199, 0.3),
+        ),
+        child: Column(
+          children: [
+            NavbarMedicalHome(
+              imageWidth: screenWidth,
+              imageHeight: screenHeight / 3.5,
             ),
-            child: Column(
-              children: [
-                NavbarMedicalHome(
-                  imageWidth: screenWidth,
-                  imageHeight: screenHeight / 3.5,
-                ),
-                user==null&&token==null?DescriptionMedicalHome(
-                  imageWidth: screenWidth,
-                  imageHeight: screenHeight / 4,
-                ):Container(),
-                ListDoctor(
-                  imageWidth: screenWidth / 6,
-                ),
-                ListDepartment(
-                  imageWidth: screenWidth / 6,
-                ),
-                NewMedical(imageWidth: screenWidth,imageHeght: screenHeight/4,)
-              ],
+            user == null && token == null
+                ? DescriptionMedicalHome(
+                    imageWidth: screenWidth,
+                    imageHeight: screenHeight / 4,
+                  )
+                : SizedBox(),
+            ListDoctor(
+              imageWidth: screenWidth / 6,
             ),
-          ),
-        );
+            ListDepartment(
+              imageWidth: screenWidth / 6,
+            ),
+            NewMedical(
+              imageWidth: screenWidth,
+              imageHeght: screenHeight / 4,
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
