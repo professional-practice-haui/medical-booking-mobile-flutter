@@ -48,16 +48,17 @@ class _HealthFormState extends State<HealthForm> {
     double screenHeight = MediaQuery.of(context).size.height;
     User? user = context.watch<UserProvider>().user;
     String? token = context.watch<UserProvider>().token;
-    DepartmentProvider departmentProvider =
-        Provider.of<DepartmentProvider>(context, listen: false);
-    ShiftProvider shiftProvider =
-        Provider.of<ShiftProvider>(context, listen: false);
+    // DepartmentProvider departmentProvider =
+    //     Provider.of<DepartmentProvider>(context, listen: false);
+    // ShiftProvider shiftProvider =
+    //     Provider.of<ShiftProvider>(context, listen: false);
     List<String> genders = ['Nam', 'Nữ', 'Khác'];
-    List<Department> departments = departmentProvider.departments;
-    List<Shift> shifts = shiftProvider.shifts;
-    Shift selectedShift = shifts[0];
+    List<Department> departments =
+        context.watch<DepartmentProvider>().departments;
+    List<Shift> shifts = context.watch<ShiftProvider>().shifts;
+    Shift? selectedShift;
     int selectedShiftId = 0;
-    String selectedDepartment = departments[0].name;
+    String selectedDepartment = "";
     String selectedGender = genders[0];
     List<String> departmentNames =
         departments.map((department) => department.name).toList();
@@ -563,137 +564,137 @@ class _HealthFormState extends State<HealthForm> {
                           },
                         ),
                         SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              "Chuyên khoa khám",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                        DropdownButtonFormField<String>(
-                          value: selectedDepartment,
-                          isExpanded: true,
-                          items: [
-                            DropdownMenuItem(
-                              value: null,
-                              child: Text(
-                                '-Chọn-',
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                            ),
-                            ...uniqueDepartmentNames.map((name) {
-                              return DropdownMenuItem<String>(
-                                value: name,
-                                child: Text(
-                                  name,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              );
-                            }),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              selectedDepartment = value!;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(width: 1),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                            hintStyle: TextStyle(color: Colors.grey[600]),
-                            hintText: '-Chọn-',
-                          ),
-                          style: TextStyle(color: Colors.black),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Vui lòng chọn một khoa';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              "Ca Khám",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                        DropdownButtonFormField<Shift>(
-                          value: selectedShift,
-                          isExpanded: true,
-                          items: [
-                            DropdownMenuItem(
-                              value: null,
-                              child: Text(
-                                '-Chọn-',
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                            ),
-                            ...shifts.map((Shift s) {
-                              return DropdownMenuItem<Shift>(
-                                value: s,
-                                child: Text(
-                                  '${s.time} ${s.date.toIso8601String().split('T')[0]}',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                onTap: () {},
-                              );
-                            }),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              selectedShift = value!;
-                              selectedShiftId = value.id;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(width: 1),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                            hintStyle: TextStyle(color: Colors.grey[600]),
-                            hintText: '-Chọn-',
-                          ),
-                          style: TextStyle(color: Colors.black),
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Vui lòng chọn ca khám';
-                            }
-                            return null;
-                          },
-                        ),
+                        // Row(
+                        //   children: [
+                        //     Text(
+                        //       "Chuyên khoa khám",
+                        //       style: TextStyle(fontWeight: FontWeight.bold),
+                        //     ),
+                        //     SizedBox(width: 5),
+                        //     // Add some space between text and asterisk
+                        //     Text(
+                        //       '*',
+                        //       style: TextStyle(
+                        //         color: Colors.red,
+                        //         fontWeight: FontWeight.bold,
+                        //       ),
+                        //     ),
+                        //     SizedBox(height: 10),
+                        //   ],
+                        // ),
+                        // DropdownButtonFormField<String>(
+                        //   value: selectedDepartment,
+                        //   isExpanded: true,
+                        //   items: [
+                        //     DropdownMenuItem(
+                        //       value: null,
+                        //       child: Text(
+                        //         '-Chọn-',
+                        //         style: TextStyle(color: Colors.grey[600]),
+                        //       ),
+                        //     ),
+                        //     ...uniqueDepartmentNames.map((name) {
+                        //       return DropdownMenuItem<String>(
+                        //         value: name,
+                        //         child: Text(
+                        //           name,
+                        //           style: TextStyle(color: Colors.black),
+                        //         ),
+                        //       );
+                        //     }),
+                        //   ],
+                        //   onChanged: (value) {
+                        //     setState(() {
+                        //       selectedDepartment = value!;
+                        //     });
+                        //   },
+                        //   decoration: InputDecoration(
+                        //     contentPadding: EdgeInsets.symmetric(
+                        //         horizontal: 16, vertical: 12),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(8),
+                        //       borderSide: BorderSide(width: 1),
+                        //     ),
+                        //     filled: true,
+                        //     fillColor: Colors.grey[200],
+                        //     hintStyle: TextStyle(color: Colors.grey[600]),
+                        //     hintText: '-Chọn-',
+                        //   ),
+                        //   style: TextStyle(color: Colors.black),
+                        //   validator: (value) {
+                        //     if (value == null || value.isEmpty) {
+                        //       return 'Vui lòng chọn một khoa';
+                        //     }
+                        //     return null;
+                        //   },
+                        // ),
+                        // SizedBox(height: 20),
+                        // Row(
+                        //   children: [
+                        //     Text(
+                        //       "Ca Khám",
+                        //       style: TextStyle(fontWeight: FontWeight.bold),
+                        //     ),
+                        //     SizedBox(width: 5),
+                        //     // Add some space between text and asterisk
+                        //     Text(
+                        //       '*',
+                        //       style: TextStyle(
+                        //         color: Colors.red,
+                        //         fontWeight: FontWeight.bold,
+                        //       ),
+                        //     ),
+                        //     SizedBox(height: 10),
+                        //   ],
+                        // ),
+                        // DropdownButtonFormField<Shift>(
+                        //   value: selectedShift,
+                        //   isExpanded: true,
+                        //   items: [
+                        //     DropdownMenuItem(
+                        //       value: null,
+                        //       child: Text(
+                        //         '-Chọn-',
+                        //         style: TextStyle(color: Colors.grey[600]),
+                        //       ),
+                        //     ),
+                        //     ...shifts.map((Shift s) {
+                        //       return DropdownMenuItem<Shift>(
+                        //         value: s,
+                        //         child: Text(
+                        //           '${s.time} ${s.date.toIso8601String().split('T')[0]}',
+                        //           style: TextStyle(color: Colors.black),
+                        //         ),
+                        //         onTap: () {},
+                        //       );
+                        //     }),
+                        //   ],
+                        //   onChanged: (value) {
+                        //     setState(() {
+                        //       selectedShift = value!;
+                        //       selectedShiftId = value.id;
+                        //     });
+                        //   },
+                        //   decoration: InputDecoration(
+                        //     contentPadding: EdgeInsets.symmetric(
+                        //         horizontal: 16, vertical: 12),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(8),
+                        //       borderSide: BorderSide(width: 1),
+                        //     ),
+                        //     filled: true,
+                        //     fillColor: Colors.grey[200],
+                        //     hintStyle: TextStyle(color: Colors.grey[600]),
+                        //     hintText: '-Chọn-',
+                        //   ),
+                        //   style: TextStyle(color: Colors.black),
+                        //   validator: (value) {
+                        //     if (value == null) {
+                        //       return 'Vui lòng chọn ca khám';
+                        //     }
+                        //     return null;
+                        //   },
+                        // ),
                         SizedBox(height: 20),
                         Row(
                           children: [

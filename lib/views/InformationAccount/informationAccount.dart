@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:medical_booking_app/models/user.model.dart';
+import 'package:medical_booking_app/providers/user.provider.dart';
+import 'package:medical_booking_app/routes/routes.dart';
 import 'package:medical_booking_app/views/InformationAccount/components/privacyPolicy.dart';
 import 'package:medical_booking_app/views/InformationAccount/components/profile.dart';
+import 'package:provider/provider.dart';
 
 class InformationAccount extends StatefulWidget {
   const InformationAccount({super.key});
@@ -16,6 +20,8 @@ class _InformationAccountState extends State<InformationAccount> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    User? user = context.watch<UserProvider>().user;
+    String? token = context.watch<UserProvider>().token;
     return SafeArea(
       child: Container(
         decoration: BoxDecoration(
@@ -45,95 +51,110 @@ class _InformationAccountState extends State<InformationAccount> {
                 ],
               ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: Colors.white,
-              ),
-              margin: EdgeInsets.all(15),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Profile()),
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.folder_shared,
-                                color: Colors.blue,
+            user != null && token != null
+                ? Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Colors.white,
+                        ),
+                        margin: EdgeInsets.all(15),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Profile()),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.folder_shared,
+                                          color: Colors.blue,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text("Hồ sơ y tế "),
+                                      ],
+                                    ),
+                                    Icon(Icons.arrow_forward_ios),
+                                  ],
+                                ),
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text("Hồ sơ y tế "),
-                            ],
-                          ),
-                          Icon(Icons.arrow_forward_ios),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
+                      list(
+                        const Icon(
+                          Icons.announcement,
+                          color: Colors.purple,
+                        ),
+                        "Điều khoản và Quy định",
+                        privacyPolicy(),
+                        const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                      list(
+                        const Icon(
+                          Icons.settings,
+                          color: Colors.black,
+                        ),
+                        "Cài đặt",
+                        InformationAccount(),
+                        const BorderRadius.all(Radius.circular(0)),
+                      ),
+                      list(
+                        const Icon(
+                          Icons.share,
+                          color: Colors.pink,
+                        ),
+                        "Chia sẻ ứng dụng",
+                        InformationAccount(),
+                        const BorderRadius.all(Radius.circular(0)),
+                      ),
+                      list(
+                          const Icon(
+                            Icons.call,
+                            color: Colors.lightBlue,
+                          ),
+                          "Liên hệ & hỗ trợ",
+                          InformationAccount(),
+                          const BorderRadius.all(Radius.circular(0))),
+                      list(
+                        const Icon(
+                          Icons.logout,
+                          color: Colors.red,
+                        ),
+                        "Đăng xuất",
+                        InformationAccount(),
+                        const BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                      ),
+                    ],
+                  )
+                : Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, RoutesWidget.routeLogin);
+                      },
+                      child: Text('Đăng nhập'),
                     ),
                   ),
-                ],
-              ),
-            ),
-            list(
-              const Icon(
-                Icons.announcement,
-                color: Colors.purple,
-              ),
-              "Điều khoản và Quy định",
-              privacyPolicy(),
-              const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-            ),
-            list(
-              const Icon(
-                Icons.settings,
-                color: Colors.black,
-              ),
-              "Cài đặt",
-              InformationAccount(),
-              const BorderRadius.all(Radius.circular(0)),
-            ),
-            list(
-              const Icon(
-                Icons.share,
-                color: Colors.pink,
-              ),
-              "Chia sẻ ứng dụng",
-              InformationAccount(),
-              const BorderRadius.all(Radius.circular(0)),
-            ),
-            list(
-                const Icon(
-                  Icons.call,
-                  color: Colors.lightBlue,
-                ),
-                "Liên hệ & hỗ trợ",
-                InformationAccount(),
-                const BorderRadius.all(Radius.circular(0))),
-            list(
-              const Icon(
-                Icons.logout,
-                color: Colors.red,
-              ),
-              "Đăng xuất",
-              InformationAccount(),
-              const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
-            ),
           ],
         ),
       ),

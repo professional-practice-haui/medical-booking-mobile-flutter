@@ -18,25 +18,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => UserProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => DepartmentProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => DoctorProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ShiftProvider(),
-        ),
-        ChangeNotifierProvider(create: (_) => HealthFormProvider()),
-      ],
-      child: MaterialApp(
-        initialRoute: RoutesWidget.routeHome,
-        onGenerateRoute: RouteGenerator.generateRoute,
-      ),
-    );
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => UserProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => DepartmentProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => DoctorProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => ShiftProvider(),
+          ),
+          ChangeNotifierProvider(create: (_) => HealthFormProvider()),
+        ],
+        child: MaterialApp(
+          initialRoute: RoutesWidget.routeHome,
+          onGenerateRoute: RouteGenerator.generateRoute,
+        ));
   }
 }

@@ -5,6 +5,7 @@ import 'package:medical_booking_app/providers/user.provider.dart';
 import 'package:medical_booking_app/models/user.model.dart';
 import 'package:medical_booking_app/views/HealthForm/healthForm.dart';
 import 'package:medical_booking_app/views/InformationAccount/informationAccount.dart';
+import 'package:medical_booking_app/views/MedicalHistory/medicalHistory.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/descriptionMedicalHome.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/listDepartment.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/listDoctor.dart';
@@ -29,10 +30,7 @@ class _MedicalHomeState extends State<MedicalHome> {
     // Widget for Đặt khám
     HealthForm(),
     // Widget for Lịch sử
-    Text(
-      'Lịch sử',
-      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-    ),
+    MedicalHistory(),
     // Widget for Cá nhân
     InformationAccount(),
   ];
@@ -40,8 +38,8 @@ class _MedicalHomeState extends State<MedicalHome> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // context.read<ShiftProvider>().getShifts();
-    // context.read<DepartmentProvider>().getDepartments();
+    context.read<ShiftProvider>().getShifts();
+    context.read<DepartmentProvider>().getDepartments();
   }
 
   @override
