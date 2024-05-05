@@ -1,5 +1,5 @@
 class Doctor {
-  final String doctorId;
+  final int doctorId;
   final String image;
   final String name;
   final String? gender;

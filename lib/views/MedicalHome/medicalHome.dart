@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medical_booking_app/providers/department.provider.dart';
+import 'package:medical_booking_app/providers/shift.provider.dart';
 import 'package:medical_booking_app/providers/user.provider.dart';
 import 'package:medical_booking_app/models/user.model.dart';
 import 'package:medical_booking_app/views/HealthForm/healthForm.dart';
@@ -21,7 +23,7 @@ class MedicalHome extends StatefulWidget {
 class _MedicalHomeState extends State<MedicalHome> {
   int _selectedIndex = 0;
   // List of widgets for each tab
-  List<Widget> _widgetOptions = <Widget>[
+  final List<Widget> _widgetOptions = <Widget>[
     // Widget for Trang chủ
     BodyHome(),
     // Widget for Đặt khám
@@ -38,6 +40,8 @@ class _MedicalHomeState extends State<MedicalHome> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // context.read<ShiftProvider>().getShifts();
+    // context.read<DepartmentProvider>().getDepartments();
   }
 
   @override

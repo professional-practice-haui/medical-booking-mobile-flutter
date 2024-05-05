@@ -13,7 +13,6 @@ class DoctorService {
       },
     );
     String responseBody = response.body;
-
     // Decode the response using UTF-8 encoding
     String decodedResponse = utf8.decode(responseBody.codeUnits);
     if (response.statusCode == 200) {
