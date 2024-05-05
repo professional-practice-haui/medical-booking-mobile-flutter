@@ -66,7 +66,7 @@ class _ListDoctorState extends State<ListDoctor> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: Image.asset(
+                              child: Image.network(
                                 doctor.image,
                                 fit: BoxFit.scaleDown,
                                 width: widget.imageWidth,

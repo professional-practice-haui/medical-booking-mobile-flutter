@@ -18,10 +18,10 @@ class DepartmentService {
     String decodedResponse = utf8.decode(responseBody.codeUnits);
     if (response.statusCode == 200) {
       // Decode JSON data
-      final jsonData = jsonDecode(response.body);
+      final jsonData = jsonDecode(decodedResponse);
       // Parse data and return list of Department objects
       lists = List<Department>.from(
-          jsonData['data']['items'].map((x) => Department.fromJson(x)));
+          jsonData["data"]["items"].map((x) => Department.fromJson(x)));
     } else {
       throw Exception('Failed to load departments');
     }
