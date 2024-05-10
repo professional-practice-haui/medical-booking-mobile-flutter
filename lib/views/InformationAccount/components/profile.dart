@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:medical_booking_app/models/profile.model.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({super.key});
+class ProfileScreen extends StatelessWidget {
+  final Profile? profile;
 
-  @override
-  State<Profile> createState() => _ProfileState();
-}
+  const ProfileScreen({super.key, required this.profile});
 
-class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,13 +43,18 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-          info("Mã bệnh nhân", "xxx"),
-          info("Họ và tên", "xxx"),
-          info("Số điện thoại", "xxx"),
-          info("Ngày sinh", "xxx"),
-          info("Giới tính", "xxx"),
-          info("Địa chỉ", "xxx"),
-          info("Email", "xxx"),
+          // info("Mã bệnh nhân", profile == null ? "Chưa có thông tin" : profile!.fullName),
+          info("Họ và tên",
+              profile == null ? "Chưa có thông tin" : profile!.fullName),
+          info("Số điện thoại",
+              profile == null ? "Chưa có thông tin" : profile!.phoneNumber),
+          info("Ngày sinh",
+              profile == null ? "Chưa có thông tin" : profile!.dateOfBirth),
+          info("Giới tính",
+              profile == null ? "Chưa có thông tin" : profile!.gender),
+          info("Địa chỉ",
+              profile == null ? "Chưa có thông tin" : profile!.address),
+          info("Email", profile == null ? "Chưa có thông tin" : profile!.email),
         ],
       ),
     );
