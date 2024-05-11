@@ -52,6 +52,7 @@ class _ListDepartmentState extends State<ListDepartment> {
                       department.image,
                       fit: BoxFit.cover,
                       width: widget.imageWidth,
+                      height: widget.imageWidth,
                     ),
                   ),
                   SizedBox(height: 10),
@@ -60,7 +61,7 @@ class _ListDepartmentState extends State<ListDepartment> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       overflow: TextOverflow.ellipsis,
-                      fontSize: 13,
+                      fontSize: 10,
                     ),
                     maxLines: 1,
                   ),
@@ -92,12 +93,12 @@ class _ListDepartmentState extends State<ListDepartment> {
   Widget _buildDepartmentList(
       BuildContext context, List<Department> departments) {
     return Container(
-      decoration: BoxDecoration(color: Colors.white),
-      margin: EdgeInsets.only(top: 10),
-      padding: EdgeInsets.all(12),
+      decoration: const BoxDecoration(color: Colors.white),
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-          Row(
+          const Row(
             children: [
               Icon(
                 Icons.medical_services_outlined,
@@ -112,15 +113,15 @@ class _ListDepartmentState extends State<ListDepartment> {
               )
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
             ),
             shrinkWrap: true, // Không cần kéo
-            itemCount: departments.length,
+            itemCount: 8,
             itemBuilder: (context, index) {
               var department = departments[index];
               return Column(
@@ -131,14 +132,13 @@ class _ListDepartmentState extends State<ListDepartment> {
                       department.image,
                       fit: BoxFit.cover,
                       width: widget.imageWidth,
+                      height: widget.imageWidth,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Text(
                     department.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
@@ -153,8 +153,8 @@ class _ListDepartmentState extends State<ListDepartment> {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(width: 1, color: Colors.grey),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   "Xem tất cả các chuyên khoa",
                   style: TextStyle(color: Colors.black, fontSize: 12),
@@ -203,6 +203,7 @@ class _ListDepartmentState extends State<ListDepartment> {
                       department.image,
                       fit: BoxFit.fill,
                       width: widget.imageWidth,
+                      height: widget.imageWidth,
                     ),
                   ),
                   SizedBox(height: 5.0),
