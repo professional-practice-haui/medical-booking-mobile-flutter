@@ -1,51 +1,112 @@
+import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'package:medical_booking_app/models/heathForm.model.dart';
 
 class HealthFormService {
-  static Future<HealthForm> createHealthForm(
-      String token,
-      int userId,
-      String namePatient,
-      String email,
-      String phoneNumber,
-      int shiftId,
-      String reason,
-      String cccd,
-      String bhyt,
-      String deniedReason) async {
-    late HealthForm healthForm;
-    final response = await http.post(
+  static Future<int> createHealthForm(
+    String token,
+    String namePatient,
+    String email,
+    String phoneNumber,
+    int shiftId,
+    String reason,
+    String cccdImagePath, // Đường dẫn của ảnh CCCD
+    String bhytImagePath, // Đường dẫn của ảnh BHYT
+  ) async {
+    var request = http.MultipartRequest(
+      'POST',
       Uri.parse(
-          'https://medical-booking-be-spring.onrender.com/api/v1/healthForms'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'userId': userId,
-        'namePatient': namePatient,
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'shiftId': shiftId,
-        'reason': reason,
-        'cccd': cccd,
-        'bhyt': bhyt,
-        'deniedReason': deniedReason,
-      }),
+          'https://medical-booking-be-spring.onrender.com/api/v1/health-forms'),
     );
-    String responseBody = response.body;
-    // Decode the response using UTF-8 encoding
-    String decodedResponse = utf8.decode(responseBody.codeUnits);
-    print(decodedResponse);
-    if (response.statusCode == 201) {
-      // Decode JSON data
-      final jsonData = jsonDecode(decodedResponse) as Map<String, dynamic>;
-      healthForm = HealthForm.fromJson(jsonData['data']);
-    } else {
-      throw Exception('Failed to create health form');
+    request.headers['Authorization'] = 'Bearer $token';
+    request.fields['namePatient'] = namePatient;
+    request.fields['email'] = email;
+    request.fields['phoneNumber'] = phoneNumber;
+    request.fields['shift'] = shiftId.toString();
+    request.fields['reason'] = reason;
+
+    // Đọc nội dung của ảnh CCCD và thêm vào yêu cầu
+    if (cccdImagePath.isNotEmpty) {
+      File cccdImageFile = File(cccdImagePath);
+      if (cccdImageFile.existsSync()) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'cccd',
+          cccdImagePath,
+          filename: 'cccd_image.jpg', // Tên tệp trên server
+        ));
+      }
     }
-    return healthForm;
+
+    // Đọc nội dung của ảnh BHYT và thêm vào yêu cầu
+    if (bhytImagePath.isNotEmpty) {
+      File bhytImageFile = File(bhytImagePath);
+      if (bhytImageFile.existsSync()) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'bhyt',
+          bhytImagePath,
+          filename: 'bhyt_image.jpg', // Tên tệp trên server
+        ));
+      }
+    }
+    var response = await request.send();
+
+    return response.statusCode;
   }
 }
+// import 'dart:io';
+// import 'package:http/http.dart' as http;
+// import 'package:image/image.dart' as img;
+
+// class HealthFormService {
+//   static Future<int> createHealthForm(
+//     String token,
+//     String namePatient,
+//     String email,
+//     String phoneNumber,
+//     int shiftId,
+//     String reason,
+//     String cccdImagePath, // Đường dẫn của ảnh CCCD
+//     String bhytImagePath, // Đường dẫn của ảnh BHYT
+//   ) async {
+//     var request = http.MultipartRequest(
+//       'POST',
+//       Uri.parse(
+//           'https://medical-booking-be-spring.onrender.com/api/v1/health-forms'),
+//     );
+//     request.headers['Authorization'] = 'Bearer $token';
+//     request.fields['namePatient'] = namePatient;
+//     request.fields['email'] = email;
+//     request.fields['phoneNumber'] = phoneNumber;
+//     request.fields['shift'] = shiftId.toString();
+//     request.fields['reason'] = reason;
+//     if (cccdImagePath.isNotEmpty) {
+//       File cccdImageFile = File(cccdImagePath);
+//       if (cccdImageFile.existsSync()) {
+//         List<int> cccdImageBytes = await cccdImageFile.readAsBytes();
+
+//         request.files.add(http.MultipartFile.fromBytes(
+//           'cccd',
+//           cccdImageBytes,
+//           filename: 'cccd_image.png', // Tên tệp trên server
+//         ));
+//       }
+//     }
+
+//     // Chuyển đổi ảnh BHYT thành .png hoặc .jpg nếu cần
+//     if (bhytImagePath.isNotEmpty) {
+//       File bhytImageFile = File(bhytImagePath);
+//       if (bhytImageFile.existsSync()) {
+//         List<int> bhytImageBytes = await bhytImageFile.readAsBytes();
+
+//         request.files.add(http.MultipartFile.fromBytes(
+//           'bhyt',
+//           bhytImageBytes,
+//           filename: 'bhyt_image.png', // Tên tệp trên server
+//         ));
+//       }
+//     }
+
+//     var response = await request.send();
+
+//     return response.statusCode;
+//   }
+// }
