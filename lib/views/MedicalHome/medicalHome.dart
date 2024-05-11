@@ -12,6 +12,7 @@ import 'package:medical_booking_app/views/MedicalHome/components/listDoctor.dart
 import 'package:medical_booking_app/views/MedicalHome/components/navbarMedicalHome.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/newMedical.dart';
 import 'package:medical_booking_app/views/MedicalHome/components/titleAppBarMedicalHome.dart';
+import 'package:medical_booking_app/views/MedicalHome/components/videoHome.dart';
 import 'package:provider/provider.dart';
 
 class MedicalHome extends StatefulWidget {
@@ -26,13 +27,13 @@ class _MedicalHomeState extends State<MedicalHome> {
   // List of widgets for each tab
   final List<Widget> _widgetOptions = <Widget>[
     // Widget for Trang chủ
-    BodyHome(),
+    const BodyHome(),
     // Widget for Đặt khám
     HealthForm(),
     // Widget for Lịch sử
-    MedicalHistory(),
+    const MedicalHistory(),
     // Widget for Cá nhân
-    InformationAccount(),
+    const InformationAccount(),
   ];
   @override
   void initState() {
@@ -110,7 +111,7 @@ class BodyHomeState extends State<BodyHome> {
     String? token = context.watch<UserProvider>().token;
     return SingleChildScrollView(
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color.fromRGBO(208, 190, 199, 0.3),
         ),
         child: Column(
@@ -124,17 +125,17 @@ class BodyHomeState extends State<BodyHome> {
                     imageWidth: screenWidth,
                     imageHeight: screenHeight / 4,
                   )
-                : SizedBox(),
+                : const SizedBox(),
             ListDoctor(
               imageWidth: screenWidth / 6,
             ),
             ListDepartment(
-              imageWidth: screenWidth / 7.5,
+              imageWidth: screenWidth / 8,
             ),
             NewMedical(
               imageWidth: screenWidth,
               imageHeght: screenHeight / 4,
-            )
+            ),
           ],
         ),
       ),

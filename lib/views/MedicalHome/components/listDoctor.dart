@@ -68,8 +68,9 @@ class _ListDoctorState extends State<ListDoctor> {
                               borderRadius: BorderRadius.circular(100),
                               child: Image.network(
                                 doctor.image,
-                                fit: BoxFit.scaleDown,
+                                fit: BoxFit.fill,
                                 width: widget.imageWidth,
+                                height: widget.imageWidth,
                               ),
                             ),
                             SizedBox(height: 10.0),
