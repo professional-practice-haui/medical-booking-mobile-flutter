@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:medical_booking_app/baseWidget/AnimationNextScreen.dart';
+import 'package:medical_booking_app/baseWidget/Dialog.dart';
 import 'package:medical_booking_app/models/department.model.dart';
 import 'package:medical_booking_app/models/shift.model.dart';
 import 'package:medical_booking_app/models/user.model.dart';
@@ -8,7 +13,9 @@ import 'package:medical_booking_app/providers/heathForm.provider.dart';
 import 'package:medical_booking_app/providers/shift.provider.dart';
 import 'package:medical_booking_app/providers/user.provider.dart';
 import 'package:medical_booking_app/routes/routes.dart';
+import 'package:medical_booking_app/services/healthForm.service.dart';
 import 'package:provider/provider.dart';
+import 'package:image/image.dart' as img;
 
 class HealthForm extends StatefulWidget {
   @override
@@ -17,7 +24,8 @@ class HealthForm extends StatefulWidget {
 
 class _HealthFormState extends State<HealthForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  List<DropdownMenuItem<String>> departments = [];
+  List<DropdownMenuItem<String>> shifts = [];
   // Controllers for text fields
   final TextEditingController namePatientController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
@@ -41,31 +49,65 @@ class _HealthFormState extends State<HealthForm> {
     context.read<DepartmentProvider>().getDepartments();
   }
 
+  void convertToPng(String imagePath) {
+    var image = img.decodeImage(File(imagePath).readAsBytesSync())!;
+    File('$imagePath.png').writeAsBytesSync(img.encodePng(image));
+  }
+
+  String? selectedDepartment, selectedCccd, selectedBhyt;
+  String? selectedShift;
+  late int selectedShiftId;
+  void getAddress(BuildContext context) {
+    context.watch<DepartmentProvider>().isLoading
+        ? departments = []
+        : departments =
+            context.watch<DepartmentProvider>().departments.map((department) {
+            return DropdownMenuItem(
+                value: department.name, child: Text("${department.name}"));
+          }).toList();
+
+    context.watch<ShiftProvider>().isLoading
+        ? shifts = []
+        : shifts = context.watch<ShiftProvider>().shifts.map((shift) {
+            return DropdownMenuItem(
+              value:
+                  "${shift.doctorName} ${shift.time} ${shift.date.toIso8601String().split('T')[0].split('-').reversed.join('-')}",
+              child: Text(
+                  "${shift.doctorName} ${shift.time} ${shift.date.toIso8601String().split('T')[0].split('-').reversed.join('-')}"),
+              onTap: () {
+                setState(() {
+                  selectedShiftId = shift.id;
+                });
+              },
+            );
+          }).toList();
+  }
+
+  // Future<void> _pickImage(TextEditingController abc) async {
+  //   final picker = ImagePicker();
+  //   final pickedFile =
+  //       await picker.pickImage(source: ImageSource.gallery); // Mở thư viện ảnh
+  //   if (pickedFile != null) {
+  //     // Nếu đã chọn ảnh, gán đường dẫn của ảnh vào controller
+  //     abc.text = pickedFile.path;
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
+    getAddress(context);
     String selectedDoctor;
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    // double screenWidth = MediaQuery.of(context).size.width;
+    // double screenHeight = MediaQuery.of(context).size.height;
     User? user = context.watch<UserProvider>().user;
     String? token = context.watch<UserProvider>().token;
-    DepartmentProvider departmentProvider =
-        Provider.of<DepartmentProvider>(context, listen: false);
-    ShiftProvider shiftProvider =
-        Provider.of<ShiftProvider>(context, listen: false);
     List<String> genders = ['Nam', 'Nữ', 'Khác'];
-    List<Department> departments = departmentProvider.departments;
-    List<Shift> shifts = shiftProvider.shifts;
-    Shift selectedShift = shifts[0];
-    int selectedShiftId = 0;
-    String selectedDepartment = departments[0].name;
+    context.watch<ShiftProvider>().shifts;
+
     String selectedGender = genders[0];
-    List<String> departmentNames =
-        departments.map((department) => department.name).toList();
-    List<String> uniqueDepartmentNames = departmentNames.toSet().toList();
     String errorMessage = '';
     void _submitForm(BuildContext context) async {
       if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-        // If the form is valid, submit
         String name = namePatientController.text;
         String phone = phoneNumberController.text;
         String cccd = cccdController.text;
@@ -77,139 +119,40 @@ class _HealthFormState extends State<HealthForm> {
         // Reset form after submission
         HealthFormProvider healthFormProvider =
             Provider.of<HealthFormProvider>(context, listen: false);
-        // print(selectedShift);
-        // print("Khoa Kham");
-        // print(selectedDepartment);
-        await healthFormProvider.createHealthForms(
-            token!,
-            user!.id!,
-            namePatientController.text,
-            emailController.text,
-            phoneNumberController.text,
-            selectedShiftId,
-            reasonController.text,
-            cccdController.text,
-            bhyt,
-            deniedReasonController.text);
+        print('Token: $token');
+        print('Name of Patient: ${namePatientController.text}');
+        print('Email: ${emailController.text}');
+        print('Phone Number: ${phoneNumberController.text}');
+        print('Selected Shift ID: $selectedShiftId');
+        print('Reason: ${reasonController.text}');
+        print('CCCD: ${selectedCccd}');
+        print('BHYT: ${selectedBhyt}');
+        print('Denied Reason: ${deniedReasonController.text}');
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AnimationNextScreen();
           },
         );
-        await Future.delayed(Duration(seconds: 1));
+        int status = await HealthFormService.createHealthForm(
+          token!,
+          namePatientController.text,
+          emailController.text,
+          phoneNumberController.text,
+          selectedShiftId,
+          reasonController.text,
+          selectedCccd!,
+          selectedBhyt!,
+        );
+        await Future.delayed(Duration(milliseconds: 20));
         Navigator.pop(context);
-        if (healthFormProvider.errorMessage != '') {
+        if (status != 201) {
           setState(() {
             errorMessage = healthFormProvider.errorMessage!;
           });
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 0.0,
-                backgroundColor: Colors.transparent,
-                content: Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Tạo đơn khám bệnh thất bại",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.blue),
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'OK',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
+          showFaildDiaLog(context, "Tạo đơn khám bệnh thất bại");
         } else {
-          await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 0.0,
-                backgroundColor: Colors.transparent,
-                content: Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Tạo đơn khám bệnh thành công",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.blue),
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'OK',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
+          showSuccessDiaLog(context, "Tạo đơn khám bệnh thành công");
         }
         _formKey.currentState!.reset();
       }
@@ -263,7 +206,7 @@ class _HealthFormState extends State<HealthForm> {
                           ],
                         ),
                         TextFormField(
-                          controller: genderController,
+                          controller: namePatientController,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
@@ -306,28 +249,19 @@ class _HealthFormState extends State<HealthForm> {
                         DropdownButtonFormField<String>(
                           isExpanded: true,
                           value: selectedGender,
-                          items: [
-                            DropdownMenuItem(
-                              value: null,
+                          items: genders.map((name) {
+                            return DropdownMenuItem<String>(
+                              value: name,
                               child: Text(
-                                '-Chọn-',
-                                style: TextStyle(color: Colors.grey[600]),
+                                name,
+                                style: TextStyle(color: Colors.black),
                               ),
-                            ),
-                            ...genders.map((name) {
-                              return DropdownMenuItem<String>(
-                                value: name,
-                                child: Text(
-                                  name,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              );
-                            }),
-                          ],
+                            );
+                          }).toList(),
                           onChanged: (value) {
-                            // setState(() {
-                            //   selectedGender = value!;
-                            // });
+                            setState(() {
+                              selectedGender = value!;
+                            });
                           },
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
@@ -350,24 +284,7 @@ class _HealthFormState extends State<HealthForm> {
                           },
                         ),
                         SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              "Ngày Sinh",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
+                        rowWidget("Ngày sinh"),
                         TextFormField(
                           controller: dateOfBirthController,
                           decoration: InputDecoration(
@@ -387,7 +304,8 @@ class _HealthFormState extends State<HealthForm> {
                             DateTime? newDate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
-                              firstDate: DateTime.now(),
+                              firstDate: DateTime.now()
+                                  .subtract(const Duration(days: 365 * 100)),
                               lastDate: DateTime(2100),
                             );
                             if (newDate == null) return;
@@ -405,25 +323,8 @@ class _HealthFormState extends State<HealthForm> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              "Số điện thoại",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
+                        const SizedBox(height: 20),
+                        rowWidget("Số điện thoại"),
                         TextFormField(
                           controller: phoneNumberController,
                           decoration: InputDecoration(
@@ -445,27 +346,63 @@ class _HealthFormState extends State<HealthForm> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 20),
-                        Row(
+                        const SizedBox(height: 20),
+                        rowWidget("CCCD/CMND"),
+                        Column(
                           children: [
-                            Text(
-                              "CCCD/CMND",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
+                            TextFormField(
+                              controller: cccdController,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(width: 1),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                hintStyle: TextStyle(color: Colors.grey[600]),
+                                suffixIcon: Icon(Icons.image),
                               ),
+                              validator: (value) {
+                                if (value == "" || value == null) {
+                                  return 'Vui lòng tải ảnh CCCD của bạn';
+                                }
+                                return null;
+                              },
+                              onTap: () async {
+                                final picker = ImagePicker();
+                                final pickedFile = await picker.pickImage(
+                                    source:
+                                        ImageSource.gallery); // Mở thư viện ảnh
+                                if (pickedFile != null) {
+                                  // Nếu đã chọn ảnh, gán đường dẫn của ảnh vào controller
+                                  setState(() {
+                                    selectedCccd = pickedFile.path;
+                                  });
+                                  cccdController.text = selectedCccd!;
+                                  convertToPng(cccdController.text);
+                                  convertToPng(selectedCccd!);
+                                  cccdController.text =
+                                      path.basename(cccdController.text);
+                                }
+                              },
                             ),
                             SizedBox(height: 10),
+                            if (selectedCccd != null)
+                              Image.file(
+                                File(selectedCccd!),
+                                width: 150,
+                                height: 150,
+                                fit: BoxFit.fill,
+                              ),
                           ],
                         ),
+                        SizedBox(height: 20),
+                        rowWidget("Email"),
                         TextFormField(
-                          controller: cccdController,
+                          controller: emailController,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
@@ -479,69 +416,68 @@ class _HealthFormState extends State<HealthForm> {
                           ),
                           validator: (value) {
                             if (value == "" || value == null) {
-                              return 'Vui lòng nhập mã số CCCD của bạn';
+                              return 'Vui lòng nhập đúng email của bạn';
                             }
                             return null;
                           },
                         ),
-                        SizedBox(height: 20),
-                        Row(
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        rowWidget("BHYT"),
+                        Column(
                           children: [
-                            Text(
-                              "Số BHYT",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
+                            TextFormField(
+                              controller: bhytController,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(width: 1),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                hintStyle: TextStyle(color: Colors.grey[600]),
+                                suffixIcon: Icon(Icons.image),
                               ),
+                              validator: (value) {
+                                if (value == "" || value == null) {
+                                  return 'Vui lòng tải ảnh BHYT của bạn';
+                                }
+                                return null;
+                              },
+                              onTap: () async {
+                                final picker = ImagePicker();
+                                final pickedFile = await picker.pickImage(
+                                    source:
+                                        ImageSource.gallery); // Mở thư viện ảnh
+                                if (pickedFile != null) {
+                                  // Nếu đã chọn ảnh, gán đường dẫn của ảnh vào controller
+                                  setState(() {
+                                    selectedBhyt = pickedFile.path;
+                                  });
+                                  bhytController.text = selectedBhyt!;
+                                  convertToPng(bhytController.text);
+                                  convertToPng(selectedBhyt!);
+                                  bhytController.text =
+                                      path.basename(bhytController.text);
+                                }
+                              },
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
+                            if (selectedBhyt != null)
+                              Image.file(
+                                File(selectedBhyt!),
+                                width: 150,
+                                height: 150,
+                                fit: BoxFit.fill,
+                              ),
                           ],
                         ),
-                        TextFormField(
-                          controller: bhytController,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(width: 1),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                            hintStyle: TextStyle(color: Colors.grey[600]),
-                          ),
-                          validator: (value) {
-                            if (value == "" || value == null) {
-                              return 'Vui lòng nhập mã số BHYT của bạn';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              "Địa chỉ hiện tại",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
+                        const SizedBox(height: 20),
+                        rowWidget("Địa chỉ hiện tại"),
                         TextFormField(
                           controller: addressController,
                           decoration: InputDecoration(
@@ -563,45 +499,11 @@ class _HealthFormState extends State<HealthForm> {
                           },
                         ),
                         SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              "Chuyên khoa khám",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
+                        rowWidget("Chuyên khoa khám"),
                         DropdownButtonFormField<String>(
                           value: selectedDepartment,
                           isExpanded: true,
-                          items: [
-                            DropdownMenuItem(
-                              value: null,
-                              child: Text(
-                                '-Chọn-',
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                            ),
-                            ...uniqueDepartmentNames.map((name) {
-                              return DropdownMenuItem<String>(
-                                value: name,
-                                child: Text(
-                                  name,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              );
-                            }),
-                          ],
+                          items: departments,
                           onChanged: (value) {
                             setState(() {
                               selectedDepartment = value!;
@@ -619,7 +521,7 @@ class _HealthFormState extends State<HealthForm> {
                             hintStyle: TextStyle(color: Colors.grey[600]),
                             hintText: '-Chọn-',
                           ),
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Vui lòng chọn một khoa';
@@ -627,55 +529,19 @@ class _HealthFormState extends State<HealthForm> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              "Ca Khám",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                        DropdownButtonFormField<Shift>(
+                        const SizedBox(height: 20),
+                        rowWidget("Ca khám"),
+                        DropdownButtonFormField<String>(
                           value: selectedShift,
                           isExpanded: true,
-                          items: [
-                            DropdownMenuItem(
-                              value: null,
-                              child: Text(
-                                '-Chọn-',
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                            ),
-                            ...shifts.map((Shift s) {
-                              return DropdownMenuItem<Shift>(
-                                value: s,
-                                child: Text(
-                                  '${s.time} ${s.date.toIso8601String().split('T')[0]}',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                onTap: () {},
-                              );
-                            }),
-                          ],
+                          items: shifts,
                           onChanged: (value) {
                             setState(() {
                               selectedShift = value!;
-                              selectedShiftId = value.id;
                             });
                           },
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -686,7 +552,7 @@ class _HealthFormState extends State<HealthForm> {
                             hintStyle: TextStyle(color: Colors.grey[600]),
                             hintText: '-Chọn-',
                           ),
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                           validator: (value) {
                             if (value == null) {
                               return 'Vui lòng chọn ca khám';
@@ -694,29 +560,15 @@ class _HealthFormState extends State<HealthForm> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              "Mô tả về bệnh",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Mô tả về bệnh",
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         TextFormField(
                           controller: deniedReasonController,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -726,32 +578,9 @@ class _HealthFormState extends State<HealthForm> {
                             fillColor: Colors.grey[200],
                             hintStyle: TextStyle(color: Colors.grey[600]),
                           ),
-                          validator: (value) {
-                            if (value == "" || value == null) {
-                              return 'Vui lòng nhập mô tả của bệnh';
-                            }
-                            return null;
-                          },
                         ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              "Lí do",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 5),
-                            // Add some space between text and asterisk
-                            Text(
-                              '*',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
+                        const SizedBox(height: 20),
+                        rowWidget("Lí do"),
                         TextFormField(
                           controller: reasonController,
                           decoration: InputDecoration(
@@ -812,5 +641,25 @@ class _HealthFormState extends State<HealthForm> {
     namePatientController.dispose();
     phoneNumberController.dispose();
     super.dispose();
+  }
+
+  Widget rowWidget(String text) {
+    return Row(
+      children: [
+        Text(
+          text,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(width: 5),
+        const Text(
+          '*',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
+    );
   }
 }

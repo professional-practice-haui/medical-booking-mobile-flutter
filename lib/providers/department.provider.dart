@@ -5,16 +5,12 @@ import 'package:medical_booking_app/services/department.service.dart';
 class DepartmentProvider extends ChangeNotifier {
   List<Department> departments = [];
   String? errorMessage = "";
-
+  bool isLoading = true;
   // Phương thức lấy danh sách các phòng ban
   Future<void> getDepartments() async {
-    try {
-      departments = await DepartmentService.getDepartments();
-    } catch (e) {
-      // Xử lý khi gặp lỗi
-      errorMessage = 'Đã xảy ra lỗi. Vui lòng thử lại sau.';
-      print("Error: $e");
-    }
+    isLoading = true;
+    departments = await DepartmentService.getDepartments();
+    isLoading = false;
     notifyListeners();
   }
 }

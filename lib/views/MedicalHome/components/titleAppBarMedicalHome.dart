@@ -118,7 +118,7 @@ class _TitleAppBarMedicalHomeState extends State<TitleAppBarMedicalHome> {
                   onTap: () {},
                   child: CircleAvatar(
                     backgroundImage: user != null && token != null
-                        ? NetworkImage(user!.avatar!)
+                        ? NetworkImage(user.avatar!)
                         : NetworkImage(
                             "https://lh3.googleusercontent.com/l1PbMRIFRS4BcOXSyUjbSsi3OKJOdp6ysy0G5w2O-jNCHcRMnWRDXSWNee0MHifq9IMVqLxo23K3A0iMh8UutYMjOUpwyrsxnS-VpO7S=rp-w1080-nu"),
                     radius: 15, // Đặt bán kính của ảnh vòng tròn
