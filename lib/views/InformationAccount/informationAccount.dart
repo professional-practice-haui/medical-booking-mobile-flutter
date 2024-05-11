@@ -17,70 +17,40 @@ class InformationAccount extends StatefulWidget {
 }
 
 class _InformationAccountState extends State<InformationAccount> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  Future<void> _fetchProfile() async {
+    String? token = context.read<UserProvider>().token;
+    print("token $token");
+    // await Future.delayed(const Duration(seconds: 2));
+    context.read<ProfileProvider>().getProfile(token == null ? "" : token);
+    // Sau khi lấy token và gọi getProfile, bạn có thể thực hiện các câu lệnh tiếp theo ở đây
+  }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-
-  // }
-  void test() {
-    String token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYW5ndDc3MDhAZ21haWwuY29tIiwiZXhwIjoxNzE1NDM2NDI0fQ.DVVX6s8GUd70FUYtKxV4djl0f-b1KSTjHlh_tHyESx8';
-
-    Future.delayed(Duration.zero, () async {
-      final response = await http.post(
-        Uri.parse(
-            'https://medical-booking-be-spring.onrender.com/api/v1/users/profile'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode(
-          <String, dynamic>{
-            'email': "profile.email",
-            'fullName': "profile.fullName",
-            'address': "profile.address",
-            'phoneNumber': "profile.phoneNumber",
-            'gender': "profile.gender",
-            'dateOfBirth': "profile.dateOfBirth",
-            'password': "profile.password",
-            'avatarUrl': "profile.avatarUrl",
-            'isLocked': "profile.isLocked",
-          },
-        ),
-      );
-    });
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfile();
   }
 
   @override
   Widget build(BuildContext context) {
-    String? token = context.read<UserProvider>().token;
-
-    print(token);
     return Consumer<ProfileProvider>(
         builder: (context, profileProvider, child) {
-      context.read<ProfileProvider>().getProfile(token == null ? "" : token);
-      final profile = context.watch<ProfileProvider>().profile;
       return SafeArea(
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Color.fromRGBO(255, 255, 255, 0.952),
           ),
           child: Column(
             children: [
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   color: Colors.white,
                 ),
-                margin: EdgeInsets.all(15),
+                margin: const EdgeInsets.all(15),
                 child: Row(
                   children: [
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.all(10),
                       child: Icon(
                         Icons.account_circle,
@@ -88,32 +58,32 @@ class _InformationAccountState extends State<InformationAccount> {
                       ),
                     ),
                     Text(
-                      profile == null ? "User" : profile.fullName,
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      profileProvider.profile == null
+                          ? "User"
+                          : profileProvider.profile!.fullName,
+                      style: const TextStyle(fontSize: 18, color: Colors.black),
                     ),
                   ],
                 ),
               ),
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   color: Colors.white,
                 ),
-                margin: EdgeInsets.all(15),
+                margin: const EdgeInsets.all(15),
                 child: Row(
                   children: [
                     Expanded(
                       child: TextButton(
                         onPressed: () {
-                          
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ProfileScreen(profile: profile)),
+                                builder: (context) => ProfileScreen()),
                           );
                         },
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
@@ -142,7 +112,7 @@ class _InformationAccountState extends State<InformationAccount> {
                   color: Colors.purple,
                 ),
                 "Điều khoản và Quy định",
-                privacyPolicy(),
+                const privacyPolicy(),
                 const BorderRadius.only(
                   topLeft: Radius.circular(10),
                   topRight: Radius.circular(10),
@@ -154,7 +124,7 @@ class _InformationAccountState extends State<InformationAccount> {
                   color: Colors.black,
                 ),
                 "Cài đặt",
-                InformationAccount(),
+                const privacyPolicy(),
                 const BorderRadius.all(Radius.circular(0)),
               ),
               list(
@@ -163,7 +133,7 @@ class _InformationAccountState extends State<InformationAccount> {
                   color: Colors.pink,
                 ),
                 "Chia sẻ ứng dụng",
-                InformationAccount(),
+                const privacyPolicy(),
                 const BorderRadius.all(Radius.circular(0)),
               ),
               list(
@@ -172,7 +142,7 @@ class _InformationAccountState extends State<InformationAccount> {
                     color: Colors.lightBlue,
                   ),
                   "Liên hệ & hỗ trợ",
-                  InformationAccount(),
+                  const privacyPolicy(),
                   const BorderRadius.all(Radius.circular(0))),
               list(
                 const Icon(
@@ -180,7 +150,7 @@ class _InformationAccountState extends State<InformationAccount> {
                   color: Colors.red,
                 ),
                 "Đăng xuất",
-                InformationAccount(),
+                const privacyPolicy(),
                 const BorderRadius.only(
                   bottomLeft: Radius.circular(10),
                   bottomRight: Radius.circular(10),
@@ -199,7 +169,7 @@ class _InformationAccountState extends State<InformationAccount> {
         borderRadius: border,
         color: Colors.white,
       ),
-      margin: EdgeInsets.only(left: 15, right: 15),
+      margin: const EdgeInsets.only(left: 15, right: 15),
       child: Row(
         children: [
           Expanded(
@@ -222,7 +192,7 @@ class _InformationAccountState extends State<InformationAccount> {
                       Text(text),
                     ],
                   ),
-                  Icon(Icons.arrow_forward_ios),
+                  const Icon(Icons.arrow_forward_ios),
                 ],
               ),
             ),

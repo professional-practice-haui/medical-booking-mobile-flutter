@@ -9,7 +9,7 @@ class ProfileService {
     Profile profile;
     // String token =
     //     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYW5ndDc3MDhAZ21haWwuY29tIiwiZXhwIjoxNzE1NDM2NDI0fQ.DVVX6s8GUd70FUYtKxV4djl0f-b1KSTjHlh_tHyESx8';
-    final response = await http.get(
+    final response = await http.put(
       Uri.parse(
           'https://medical-booking-be-spring.onrender.com/api/v1/users/profile'),
       headers: <String, String>{
@@ -24,28 +24,26 @@ class ProfileService {
     if (response.statusCode == 200) {
       // Decode JSON data
       final jsonData = jsonDecode(decodedResponse);
-
-      profile = Profile.fromJson(jsonData["data"]["items"]);
+      // print(jsonData["data"]);
+      profile = Profile.fromJson(jsonData["data"]);
     } else {
       throw Exception('Failed to get profile');
     }
     return profile;
   }
 
-  static Future<Profile> updateProfile() async {
-    Profile profile = Profile(
-        email: " haha",
-        fullName: "fullName",
-        address: "address",
-        phoneNumber: "phoneNumber",
-        gender: "gender",
-        dateOfBirth: "dateOfBirth",
-        password: "password",
-        avatarUrl: "avatarUrl",
-        isLocked: false);
-    String token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYW5ndDc3MDhAZ21haWwuY29tIiwiZXhwIjoxNzE1NDM2NDI0fQ.DVVX6s8GUd70FUYtKxV4djl0f-b1KSTjHlh_tHyESx8';
-    final response = await http.post(
+  static Future<dynamic> updateProfile(
+      String token,
+      String fullName,
+      String phoneNumber,
+      String dateOfBirth,
+      String gender,
+      String address,
+      String email) async {
+    Profile profile;
+    // String token =
+    //     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYW5ndDc3MDhAZ21haWwuY29tIiwiZXhwIjoxNzE1NDM2NDI0fQ.DVVX6s8GUd70FUYtKxV4djl0f-b1KSTjHlh_tHyESx8';
+    final response = await http.put(
       Uri.parse(
           'https://medical-booking-be-spring.onrender.com/api/v1/users/profile'),
       headers: <String, String>{
@@ -53,29 +51,24 @@ class ProfileService {
         'Authorization': 'Bearer $token',
       },
       body: jsonEncode(
-        <String, dynamic>{
-          'email': profile.email,
-          'fullName': profile.fullName,
-          'address': profile.address,
-          'phoneNumber': profile.phoneNumber,
-          'gender': profile.gender,
-          'dateOfBirth': profile.dateOfBirth,
-          'password': profile.password,
-          'avatarUrl': profile.avatarUrl,
-          'isLocked': profile.isLocked,
+        <String, String>{
+          'fullName': fullName,
+          'phoneNumber': phoneNumber,
+          'dateOfBirth': dateOfBirth,
+          'gender': gender,
+          'address': address,
+          'email': email
+          // 'avatarUrl': avatarUrl,
         },
       ),
     );
     String responseBody = response.body;
+
     // Decode the response using UTF-8 encoding
     String decodedResponse = utf8.decode(responseBody.codeUnits);
-    print(decodedResponse);
-    if (response.statusCode == 201) {
-      // Decode JSON data
-      final jsonData = jsonDecode(decodedResponse) as Map<String, dynamic>;
-    } else {
-      throw Exception('Failed to update profile');
-    }
-    return profile;
+
+    // Parse the JSON data
+    Map<String, dynamic> responseData = jsonDecode(decodedResponse);
+    return responseData;
   }
 }
