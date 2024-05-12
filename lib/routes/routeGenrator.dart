@@ -11,7 +11,7 @@ class RouteGenerator {
     final args = settings.arguments;
     switch (settings.name){
       case '/':
-        return MaterialPageRoute(builder: (_)=>MedicalHome());
+        return MaterialPageRoute(builder: (_)=>const MedicalHome());
       case '/login':
         return MaterialPageRoute(builder: (_)=>LoginScreen());
       case '/register':
@@ -28,9 +28,9 @@ class RouteGenerator {
     return MaterialPageRoute(builder: (_){
       return Scaffold(
         appBar: AppBar(
-          title: Text("Error"),
+          title: const Text("Error"),
         ),
-        body: Center(
+        body: const Center(
           child: Text('Error'),
         ),
       );

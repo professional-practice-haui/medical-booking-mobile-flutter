@@ -142,22 +142,13 @@ class _HealthFormState extends State<HealthForm> {
         String address = addressController.text;
         String ngayKham = ngayKhamController.text;
         String chuyenKhoaKham = chuyenKhoaKhamController.text;
-        print('Token: $token');
-        print('Name of Patient: ${namePatientController.text}');
-        print('Email: ${emailController.text}');
-        print('Phone Number: ${phoneNumberController.text}');
-        print('Selected Shift ID: $selectedShiftId');
-        print('Reason: ${reasonController.text}');
-        print('CCCD: ${selectedCccd}');
-        print('BHYT: ${selectedBhyt}');
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AnimationNextScreen();
           },
         );
-        Future.delayed(Duration(milliseconds: 100));
-        Navigator.pop(context);
+
         int status = await HealthFormService.createHealthForm(
           token!,
           namePatientController.text,
@@ -168,7 +159,8 @@ class _HealthFormState extends State<HealthForm> {
           selectedCccd!,
           selectedBhyt!,
         );
-
+        // await Future.delayed(Duration(milliseconds: 100));
+        Navigator.pop(context);
         if (status != 201) {
           showFaildDiaLog(context, "Tạo đơn khám bệnh thất bại");
         } else {
@@ -181,6 +173,7 @@ class _HealthFormState extends State<HealthForm> {
           addressController.clear();
           ngayKhamController.clear();
           chuyenKhoaKhamController.clear();
+          reasonController.clear();
         }
         _formKey.currentState!.reset();
       }
