@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(create: (_) => HealthFormProvider()),
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
           initialRoute: RoutesWidget.routeHome,
           onGenerateRoute: RouteGenerator.generateRoute,
         ));

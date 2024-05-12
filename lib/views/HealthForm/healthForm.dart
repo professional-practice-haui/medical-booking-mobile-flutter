@@ -72,49 +72,14 @@ class _HealthFormState extends State<HealthForm> {
                 value: department.name, child: Text("${department.name}"));
           }).toList();
     List<Shift> shiftTime = context.watch<ShiftProvider>().shifts;
-
-//     Map<String, Shift> uniqueShiftsMap = {};
-
-// // Duyệt qua từng phần tử trong danh sách Shift
-//     for (Shift shift in context.watch<ShiftProvider>().shifts) {
-//       uniqueShiftsMap[shift.time] = shift;
-//     }
-
-// // Chuyển Map thành List để sử dụng trong ứng dụng của bạn
-//     List<Shift> uniqueShiftsList = uniqueShiftsMap.values.toList();
-//     context.watch<ShiftProvider>().isLoading
-//         ? shifts = []
-//         : shifts =
-//             uniqueShiftsMap// Chuyển danh sách thành một Set để loại bỏ các phần tử trùng lặp
-//                 .map((shift) {
-//             return DropdownMenuItem(
-//               value: "${shift.time}",
-//               child: Text("${shift.time}"),
-//               onTap: () {
-//                 Provider.of<ShiftProvider>(context, listen: false);
-//                 setState(() {
-//                   selectedShiftId = context
-//                       .watch<ShiftProvider>()
-//                       .shifts
-//                       .firstWhere((element) =>
-//                           element.date == shift.date &&
-//                           element.time == shift.time)
-//                       .id;
-//                 });
-//               },
-//             );
-//           }).toList();
     Map<String, Shift> uniqueShiftsMap = {};
     Map<DateTime, Shift> dateTimeShiftsMap = {};
-// Duyệt qua từng phần tử trong danh sách Shift
     for (Shift shift in context.watch<ShiftProvider>().shifts) {
       uniqueShiftsMap[shift.time] = shift;
       dateTimeShiftsMap[shift.date] = shift;
     }
-
     List<Shift> uniqueShiftsList = uniqueShiftsMap.values.toList();
     List<Shift> dateShiftsList = dateTimeShiftsMap.values.toList();
-// Tạo danh sách DropdownMenuItem từ uniqueShiftsList
     context.watch<ShiftProvider>().isLoading
         ? shifts = []
         : shifts = uniqueShiftsList.map((shift) {
@@ -185,13 +150,14 @@ class _HealthFormState extends State<HealthForm> {
         print('Reason: ${reasonController.text}');
         print('CCCD: ${selectedCccd}');
         print('BHYT: ${selectedBhyt}');
-        print('Denied Reason: ${deniedReasonController.text}');
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AnimationNextScreen();
           },
         );
+        Future.delayed(Duration(milliseconds: 100));
+        Navigator.pop(context);
         int status = await HealthFormService.createHealthForm(
           token!,
           namePatientController.text,
@@ -202,8 +168,7 @@ class _HealthFormState extends State<HealthForm> {
           selectedCccd!,
           selectedBhyt!,
         );
-        await Future.delayed(Duration(milliseconds: 20));
-        Navigator.pop(context);
+
         if (status != 201) {
           showFaildDiaLog(context, "Tạo đơn khám bệnh thất bại");
         } else {
@@ -330,7 +295,7 @@ class _HealthFormState extends State<HealthForm> {
                                 filled: true,
                                 fillColor: Colors.grey[200],
                                 hintStyle: TextStyle(color: Colors.grey[600]),
-                                suffixIcon: Icon(Icons.image),
+                                prefixIcon: Icon(Icons.image),
                                 hintText: "Chọn ảnh",
                               ),
                               validator: (value) {
@@ -394,7 +359,7 @@ class _HealthFormState extends State<HealthForm> {
                                 filled: true,
                                 fillColor: Colors.grey[200],
                                 hintStyle: TextStyle(color: Colors.grey[600]),
-                                suffixIcon: Icon(Icons.image),
+                                prefixIcon: Icon(Icons.image),
                                 hintText: "Chọn ảnh",
                               ),
                               onTap: () async {

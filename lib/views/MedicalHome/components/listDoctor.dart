@@ -76,7 +76,11 @@ class _ListDoctorState extends State<ListDoctor> {
                             SizedBox(height: 10.0),
                             Text(
                               doctor.name,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              maxLines: 1,
                             ),
                             Text(
                               "${doctor.experience} năm kinh nghiệm",

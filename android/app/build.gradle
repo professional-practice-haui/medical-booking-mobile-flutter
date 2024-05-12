@@ -26,7 +26,10 @@ android {
     namespace "com.example.medical_booking_mobile_flutter"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
-
+    defaultConfig {
+        // Other configurations
+        multiDexEnabled true
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
