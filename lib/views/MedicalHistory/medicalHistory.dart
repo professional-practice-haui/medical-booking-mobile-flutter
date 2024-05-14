@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:medical_booking_app/models/user.model.dart';
+import 'package:medical_booking_app/models/historyForm.model.dart';
+import 'package:medical_booking_app/providers/history.provider.dart';
 import 'package:medical_booking_app/providers/user.provider.dart';
-import 'package:medical_booking_app/routes/routes.dart';
 import 'package:provider/provider.dart';
 
 class MedicalHistory extends StatefulWidget {
@@ -14,56 +14,74 @@ class MedicalHistory extends StatefulWidget {
 }
 
 class _MedicalHistoryState extends State<MedicalHistory> {
-  @override
-  Widget build(BuildContext context) {
-    User? user = context.watch<UserProvider>().user;
-    String? token = context.watch<UserProvider>().token;
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: const Text(
-          "Hồ sơ y tế",
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Color.fromRGBO(25, 117, 220, 1),
-      ),
-      body: user != null && token != null
-          ? Container(
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(250, 250, 250, 0),
-              ),
-              child: Column(
-                children: [
-                  form(
-                      "1",
-                      "2",
-                      'https://i.pinimg.com/236x/e1/6c/70/e16c704fc0b655e553dd7a1a8a00475d.jpg',
-                      "4",
-                      "5",
-                      "6")
-                ],
-              ),
-            )
-          : Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, RoutesWidget.routeLogin);
-                },
-                child: Text('Đăng nhập'),
-              ),
-            ),
-    );
+  Future<void> _fetchData() async {
+    String? token = context.read<UserProvider>().token;
+    print("token $token");
+    // await Future.delayed(const Duration(seconds: 2));
+    context.read<HistoryProvider>().getForms(token == null ? "" : token);
   }
 
-  InkWell form(String formId, String doctorName, String image, String time,
-      String shift, String patientName) {
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<HistoryProvider>(
+        builder: (context, historyProvider, child) {
+      return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: const Text(
+            "Hồ sơ y tế",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: const Color.fromRGBO(25, 117, 220, 1),
+        ),
+        body: historyProvider.forms.isEmpty
+            ? const Text(
+                "Chưa có đơn đặt khám",
+                textAlign: TextAlign.center,
+              )
+            : Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white10,
+                ),
+                child: ListView.builder(
+                    itemCount: historyProvider.forms.length,
+                    itemBuilder: (context, index) {
+                      return form(historyProvider.forms[index]);
+                    })),
+      );
+    });
+  }
+
+  InkWell form(HistoryForm form) {
+    String text;
+    Color colorBackground;
+    Color colorText;
+    if (form.status == 0) {
+      colorBackground = Colors.yellow.shade100;
+      colorText = Colors.orange;
+      text = "Đang chờ";
+    } else if (form.status == 1) {
+      colorBackground = Colors.green.shade100;
+      colorText = Colors.green;
+      text = "Đã đặt lịch";
+    } else {
+      colorBackground = Colors.red.shade100;
+      colorText = Colors.red;
+      text = "Đã hủy";
+    }
     return InkWell(
       onTap: () {},
       child: Container(
         padding: const EdgeInsets.all(15),
         margin: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10)),
           color: Colors.white,
         ),
@@ -72,10 +90,27 @@ class _MedicalHistoryState extends State<MedicalHistory> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(doctorName),
+                Container(
+                  decoration: BoxDecoration(
+                    color: colorBackground,
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                  ),
+                  padding: const EdgeInsets.all(5),
+                  child: Text(
+                    text,
+                    style: TextStyle(color: colorText),
+                  ),
+                ),
+                Text("STT ${form.acceptedNumber}"),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(form.nameDoctor),
                 ClipOval(
                   child: Image.network(
-                    image,
+                    form.imageDoctor,
                     fit: BoxFit.cover,
                     width: 50,
                     height: 50,
@@ -87,21 +122,21 @@ class _MedicalHistoryState extends State<MedicalHistory> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Giờ khám"),
-                Text(time),
+                Text(form.time),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Chuyên khoa"),
-                Text(shift),
+                Text(form.nameDepartment),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Bệnh nhân"),
-                Text(patientName),
+                Text(form.namePatient),
               ],
             ),
           ],

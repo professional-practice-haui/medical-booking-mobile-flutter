@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:medical_booking_app/providers/department.provider.dart';
 import 'package:medical_booking_app/providers/doctor.provider.dart';
 import 'package:medical_booking_app/providers/heathForm.provider.dart';
+import 'package:medical_booking_app/providers/history.provider.dart';
 import 'package:medical_booking_app/providers/shift.provider.dart';
 import 'package:medical_booking_app/providers/profile.provider.dart';
 import 'package:medical_booking_app/providers/user.provider.dart';
@@ -35,6 +36,9 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => HealthFormProvider()),
           ChangeNotifierProvider(
             create: (_) => ProfileProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => HistoryProvider(),
           ),
         ],
         child: const MaterialApp(
