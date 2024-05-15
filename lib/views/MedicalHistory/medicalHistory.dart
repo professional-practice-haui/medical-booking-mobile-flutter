@@ -122,7 +122,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Giờ khám"),
-                Text(form.time),
+                Text("${form.time} ${form.date}"),
               ],
             ),
             Row(

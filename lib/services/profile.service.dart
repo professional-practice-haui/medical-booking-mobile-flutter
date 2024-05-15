@@ -51,7 +51,7 @@ class ProfileService {
         'Authorization': 'Bearer $token',
       },
       body: jsonEncode(
-        <String, String>{
+        <String, dynamic>{
           'fullName': fullName,
           'phoneNumber': phoneNumber,
           'dateOfBirth': dateOfBirth,
@@ -63,12 +63,18 @@ class ProfileService {
       ),
     );
     String responseBody = response.body;
-
     // Decode the response using UTF-8 encoding
     String decodedResponse = utf8.decode(responseBody.codeUnits);
 
-    // Parse the JSON data
-    Map<String, dynamic> responseData = jsonDecode(decodedResponse);
-    return responseData;
+    if (response.statusCode == 200) {
+      // Decode JSON data
+      final jsonData = jsonDecode(decodedResponse);
+      // print(jsonData["data"]);
+      profile = Profile.fromJson(jsonData["data"]);
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to put profile');
+    }
+    return profile;
   }
 }
