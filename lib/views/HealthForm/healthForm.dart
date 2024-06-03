@@ -166,6 +166,7 @@ class _HealthFormState extends State<HealthForm> {
           showFaildDiaLog(context, "Tạo đơn khám bệnh thất bại");
         } else {
           showSuccessDiaLog(context, "Tạo đơn khám bệnh thành công");
+          context.read<HistoryProvider>().getForms(token == null ? "" : token);
           namePatientController.clear();
           phoneNumberController.clear();
           cccdController.clear();
