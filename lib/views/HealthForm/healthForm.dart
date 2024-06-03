@@ -151,15 +151,15 @@ class _HealthFormState extends State<HealthForm> {
         );
 
         int status = await HealthFormService.createHealthForm(
-          token!,
-          namePatientController.text,
-          emailController.text,
-          phoneNumberController.text,
-          selectedShiftId,
-          reasonController.text,
-          selectedCccd!,
-          selectedBhyt!,
-        );
+            token!,
+            namePatientController.text,
+            emailController.text,
+            phoneNumberController.text,
+            selectedShiftId,
+            reasonController.text,
+            selectedCccd!,
+            selectedBhyt!,
+            address);
         await Future.delayed(Duration(milliseconds: 100));
         Navigator.pop(context);
         if (status != 201) {
@@ -185,13 +185,14 @@ class _HealthFormState extends State<HealthForm> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.lightBlueAccent,
-          toolbarHeight: 80,
+          backgroundColor: Color(0xFF1976D2),
+          toolbarHeight: 60,
           title: const Center(
             child: Text(
               'Đặt lịch khám bệnh',
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
           ),
         ),

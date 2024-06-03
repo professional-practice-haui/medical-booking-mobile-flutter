@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:medical_booking_app/models/historyForm.model.dart';
 import 'package:medical_booking_app/providers/history.provider.dart';
 import 'package:medical_booking_app/providers/user.provider.dart';
+import 'package:medical_booking_app/views/DetailHealthForm/DetailHealthForm.dart';
 import 'package:provider/provider.dart';
 
 class MedicalHistory extends StatefulWidget {
@@ -77,7 +78,16 @@ class _MedicalHistoryState extends State<MedicalHistory> {
       text = "Đã hủy";
     }
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => DetailHealthForm(
+              historyForm: form,
+            ),
+          ),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.all(15),
         margin: const EdgeInsets.all(15),

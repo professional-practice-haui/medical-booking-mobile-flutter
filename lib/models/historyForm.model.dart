@@ -7,7 +7,11 @@ class HistoryForm {
   final String date;
   final String nameDepartment;
   final String namePatient;
-
+  final String email;
+  final String phoneNumber;
+  final String reason;
+  final String cccd;
+  final String bhyt;
   HistoryForm({
     required this.status,
     required this.acceptedNumber,
@@ -17,6 +21,11 @@ class HistoryForm {
     required this.date,
     required this.nameDepartment,
     required this.namePatient,
+    required this.email,
+    required this.phoneNumber,
+    required this.reason,
+    required this.cccd,
+    required this.bhyt,
   });
   factory HistoryForm.fromJson(Map<String, dynamic> json) {
     return HistoryForm(
@@ -28,8 +37,11 @@ class HistoryForm {
       date: json['shift']['date'] as String,
       nameDepartment: json['shift']['doctor']['department']['name'] as String,
       namePatient: json['namePatient'] as String,
+      email: json['email'] as String,
+      phoneNumber: json['phoneNumber'] as String,
+      reason: json['reason'] as String,
+      cccd: json['cccd'] as String,
+      bhyt: json['bhyt'] as String,
     );
   }
 }
-
-

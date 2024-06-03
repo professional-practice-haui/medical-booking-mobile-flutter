@@ -3,15 +3,16 @@ import 'package:http/http.dart' as http;
 
 class HealthFormService {
   static Future<int> createHealthForm(
-    String token,
-    String namePatient,
-    String email,
-    String phoneNumber,
-    int shiftId,
-    String reason,
-    String cccdImagePath, // Đường dẫn của ảnh CCCD
-    String bhytImagePath, // Đường dẫn của ảnh BHYT
-  ) async {
+      String token,
+      String namePatient,
+      String email,
+      String phoneNumber,
+      int shiftId,
+      String reason,
+      String cccdImagePath, // Đường dẫn của ảnh CCCD
+      String bhytImagePath,
+      String address // Đường dẫn của ảnh BHYT
+      ) async {
     var request = http.MultipartRequest(
       'POST',
       Uri.parse(
@@ -23,7 +24,7 @@ class HealthFormService {
     request.fields['phoneNumber'] = phoneNumber;
     request.fields['shift'] = shiftId.toString();
     request.fields['reason'] = reason;
-
+    request.fields['address'] = address;
     // Đọc nội dung của ảnh CCCD và thêm vào yêu cầu
     if (cccdImagePath.isNotEmpty) {
       File cccdImageFile = File(cccdImagePath);
