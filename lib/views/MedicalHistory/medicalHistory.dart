@@ -24,13 +24,14 @@ class _MedicalHistoryState extends State<MedicalHistory> {
   @override
   void initState() {
     super.initState();
-    _fetchData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<HistoryProvider>(
         builder: (context, historyProvider, child) {
+      _fetchData();
+
       return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,

@@ -71,7 +71,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           backgroundColor:
                               MaterialStateProperty.all<Color>(Colors.blue)),
                       onPressed: () {
-                        print(_phoneNumberController.text);
+                        print("start put");
                         profileProvider.putProfile(
                             token == null ? "" : token,
                             _fullNameController.text,

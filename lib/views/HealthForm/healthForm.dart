@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:medical_booking_app/providers/history.provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -564,6 +565,7 @@ class _HealthFormState extends State<HealthForm> {
                           child: ElevatedButton(
                             onPressed: () {
                               _submitForm(context);
+                              
                             },
                             child: Text('Đặt lịch khám'),
                           ),
@@ -576,6 +578,10 @@ class _HealthFormState extends State<HealthForm> {
             : Center(
                 child: ElevatedButton(
                   onPressed: () {
+                    String? token = context.watch<UserProvider>().token;
+                    context
+                        .read<HistoryProvider>()
+                        .getForms(token == null ? "" : token);
                     Navigator.pushNamed(context, RoutesWidget.routeLogin);
                   },
                   child: Text('Đăng nhập'),

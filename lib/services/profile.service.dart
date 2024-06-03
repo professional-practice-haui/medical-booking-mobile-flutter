@@ -32,7 +32,7 @@ class ProfileService {
     return profile;
   }
 
-  static Future<dynamic> updateProfile(
+  static Future<Profile> updateProfile(
       String token,
       String fullName,
       String phoneNumber,
@@ -41,27 +41,25 @@ class ProfileService {
       String address,
       String email) async {
     Profile profile;
+    Map<String, String> data = {
+      'fullName': fullName,
+      'phoneNumber': phoneNumber,
+      'dateOfBirth': dateOfBirth,
+      'gender': gender,
+      'address': address,
+      'email': email
+      // 'avatarUrl': avatarUrl,
+    };
     // String token =
     //     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYW5ndDc3MDhAZ21haWwuY29tIiwiZXhwIjoxNzE1NDM2NDI0fQ.DVVX6s8GUd70FUYtKxV4djl0f-b1KSTjHlh_tHyESx8';
     final response = await http.put(
-      Uri.parse(
-          'https://medical-booking-be-spring.onrender.com/api/v1/users/profile'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(
-        <String, dynamic>{
-          'fullName': fullName,
-          'phoneNumber': phoneNumber,
-          'dateOfBirth': dateOfBirth,
-          'gender': gender,
-          'address': address,
-          'email': email
-          // 'avatarUrl': avatarUrl,
+        Uri.parse(
+            'https://medical-booking-be-spring.onrender.com/api/v1/users/profile'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': 'Bearer $token',
         },
-      ),
-    );
+        body: data);
     String responseBody = response.body;
     // Decode the response using UTF-8 encoding
     String decodedResponse = utf8.decode(responseBody.codeUnits);
