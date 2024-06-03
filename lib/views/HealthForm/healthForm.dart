@@ -160,7 +160,7 @@ class _HealthFormState extends State<HealthForm> {
           selectedCccd!,
           selectedBhyt!,
         );
-        // await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(Duration(milliseconds: 100));
         Navigator.pop(context);
         if (status != 201) {
           showFaildDiaLog(context, "Tạo đơn khám bệnh thất bại");
@@ -565,7 +565,6 @@ class _HealthFormState extends State<HealthForm> {
                           child: ElevatedButton(
                             onPressed: () {
                               _submitForm(context);
-                              
                             },
                             child: Text('Đặt lịch khám'),
                           ),

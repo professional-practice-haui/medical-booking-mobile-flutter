@@ -16,7 +16,6 @@ class MedicalHistory extends StatefulWidget {
 class _MedicalHistoryState extends State<MedicalHistory> {
   Future<void> _fetchData() async {
     String? token = context.read<UserProvider>().token;
-    print("token $token");
     // await Future.delayed(const Duration(seconds: 2));
     context.read<HistoryProvider>().getForms(token == null ? "" : token);
   }
