@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:medical_booking_app/providers/doctor.provider.dart';
 import 'package:medical_booking_app/providers/history.provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
@@ -99,12 +100,12 @@ class _HealthFormState extends State<HealthForm> {
             );
           }).toList();
 
-    context.watch<ShiftProvider>().isLoading
+    context.watch<DoctorProvider>().isLoading
         ? doctors = []
-        : doctors = shiftTime.map((shift) {
+        : doctors = context.watch<DoctorProvider>().doctors.map((shift) {
             return DropdownMenuItem(
-              value: "${shift.doctorName}",
-              child: Text("${shift.doctorName}"),
+              value: "${shift.name}",
+              child: Text("${shift.name}"),
               onTap: () {},
             );
           }).toList();
